@@ -44,34 +44,34 @@ android {
 
 dependencies {
     // androidx
-    implementation("androidx.documentfile:documentfile:1.0.1")
+    implementation(libs.androidx.documentfile)
 
     // dagger
-    implementation("com.google.dagger:dagger:2.18")
-    kapt("com.google.dagger:dagger-compiler:2.18")
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
 
     // Fix for javax annotations missing on jdk8+
-    implementation("com.github.pengrad:jdk9-deps:1ffe84c468")
-    implementation("javax.annotation:javax.annotation-api:1.3.2")
+    implementation(libs.jdk9.deps)
+    implementation(libs.javax.annotation.api)
 
     // realm
-    kapt("io.realm:realm-annotations:10.15.0")
-    kapt("io.realm:realm-annotations-processor:10.15.0")
+    kapt(libs.realm.annotations)
+    kapt(libs.realm.annotations.processor)
 
     // rxjava
-    implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
-    implementation("io.reactivex.rxjava2:rxjava:2.1.4")
-    implementation("io.reactivex.rxjava2:rxkotlin:2.1.0")
+    implementation(libs.rxandroid)
+    implementation(libs.rxjava)
+    implementation(libs.rxkotlin)
 
     // coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.4.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.rx2)
+    implementation(libs.kotlinx.coroutines.reactive)
 
     implementation(libs.androidx.ktx)
-    implementation("com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3")
+    implementation(libs.rx.preferences)
     implementation(libs.timber)
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.21")
+    implementation(libs.kotlin.stdlib)
 
     implementation(project(":common"))
 }

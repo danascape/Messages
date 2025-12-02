@@ -43,57 +43,57 @@ android {
 
 dependencies {
     // androidx
-    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.ktx)
-    implementation("androidx.exifinterface:exifinterface:1.0.0")
-    implementation("androidx.documentfile:documentfile:1.0.1")
+    implementation(libs.androidx.exifinterface)
+    implementation(libs.androidx.documentfile)
 
     // glide
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    kapt("com.github.bumptech.glide:compiler:4.16.0")
+    implementation(libs.glide)
+    kapt(libs.compiler)
 
     // dagger
-    implementation("com.google.dagger:dagger:2.18")
-    implementation("com.google.dagger:dagger-android-support:2.18")
-    kapt("com.google.dagger:dagger-android-processor:2.18")
-    kapt("com.google.dagger:dagger-compiler:2.18")
+    implementation(libs.dagger)
+    implementation(libs.dagger.android.support)
+    kapt(libs.dagger.android.processor)
+    kapt(libs.dagger.compiler)
 
     // Resolve jdk8+ Generation Annotations - javax annotation does not exist
-    implementation("com.github.pengrad:jdk9-deps:1ffe84c468")
-    implementation("javax.annotation:javax.annotation-api:1.3.2")
+    implementation(libs.jdk9.deps)
+    implementation(libs.javax.annotation.api)
 
     // rxjava
-    implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
-    implementation("io.reactivex.rxjava2:rxjava:2.1.4")
-    implementation("io.reactivex.rxjava2:rxkotlin:2.1.0")
+    implementation(libs.rxandroid)
+    implementation(libs.rxjava)
+    implementation(libs.rxkotlin)
 
     // testing
     androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha3") {
         exclude(group = "com.android.support", module = "support-annotations")
     }
 
-    androidTestImplementation("org.mockito:mockito-android:2.18.3")
-    testImplementation("androidx.test:runner:1.1.0-alpha3")
-    testImplementation("junit:junit:4.12")
-    testImplementation("org.mockito:mockito-core:2.18.3")
+    androidTestImplementation(libs.mockito.android)
+    testImplementation(libs.androidx.runner)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
 
     // coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.4.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.rx2)
+    implementation(libs.kotlinx.coroutines.reactive)
 
-    implementation("com.callcontrol:datashare:1.3.0")
-    implementation("com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3")
+    implementation(libs.datashare)
+    implementation(libs.rx.preferences)
     implementation(libs.timber)
-    implementation("com.squareup.moshi:moshi:1.8.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
-    implementation("io.michaelrocks:libphonenumber-android:8.13.47")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.21")
+    implementation(libs.moshi)
+    kapt(libs.moshi.kotlin.codegen)
+    implementation(libs.okhttp3.okhttp)
+    implementation(libs.libphonenumber.android)
+    implementation(libs.kotlin.stdlib)
 
     // work manager
-    implementation("androidx.work:work-runtime-ktx:2.8.0")
-    implementation("androidx.work:work-rxjava2:2.8.0")
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.work.rxjava2)
 
     implementation(project(":android-smsmms"))
     implementation(project(":common"))
