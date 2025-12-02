@@ -20,6 +20,8 @@
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="frost_surface">#CCFFFFFF</color>
+    <color name="frost_stroke">#4DFFFFFF</color>
 
     <color name="rippleLight">#1f000000</color>
     <color name="rippleDark">#33ffffff</color>

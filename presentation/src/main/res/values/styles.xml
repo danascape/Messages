@@ -127,4 +127,9 @@
         <item name="android:layout_marginEnd">32dp</item>
     </style>
 
+    <style name="ShapeAppearance.Quik.FrostedFab" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>
