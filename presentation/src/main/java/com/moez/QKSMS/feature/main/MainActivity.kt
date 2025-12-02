@@ -190,15 +190,14 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     }
                     binding.drawer.plusIcon.setTint(theme.theme)
                     binding.drawer.rateIcon.setTint(theme.theme)
-                    binding.compose.setBackgroundTint(theme.theme)
 
-                    binding.searchPill.setCardBackgroundColor(theme.highlight)
-                    binding.searchIcon.setTint(theme.textPrimary)
-                    binding.toolbarSearch.setTextColor(theme.textPrimary)
-                    binding.toolbarSearch.setHintTextColor(theme.textSecondary)
+                    val primaryTextColor = resolveThemeColor(android.R.attr.textColorPrimary)
+                    val secondaryTextColor = resolveThemeColor(android.R.attr.textColorSecondary)
+                    binding.searchIcon.setTint(primaryTextColor)
+                    binding.toolbarSearch.setTextColor(primaryTextColor)
+                    binding.toolbarSearch.setHintTextColor(secondaryTextColor)
 
-                    // Set the FAB compose icon color
-                    binding.compose.setTint(theme.textPrimary)
+                    binding.compose.setTint(primaryTextColor)
                 }
     }
 
