@@ -1,5 +1,8 @@
 [versions]
+agp = "8.2.2"
 ktx = "1.1.0"
+timber = "5.0.1"
 
 [libraries]
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
