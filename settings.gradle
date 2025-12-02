@@ -1,1 +1,0 @@
-include ':presentation', ':android-smsmms', ':domain', ':data', ':common'

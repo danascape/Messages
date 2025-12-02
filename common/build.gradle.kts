@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
  *
  * This file is part of QKSMS.
  *
@@ -16,36 +17,39 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+
+plugins {
+    id("com.android.library")
+    id("kotlin-android")
+}
 
 android {
-    compileSdk 33
+    compileSdk = 33
 
     defaultConfig {
-        minSdk 23
-        targetSdkVersion 33
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        minSdk = 23
+        targetSdk = 33
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    namespace 'dev.danascape.messages.common'
+
+    namespace = "dev.danascape.messages.common"
 }
 
 dependencies {
-    implementation "androidx.core:core-ktx:$androidx_core_version"
-    implementation "com.jakewharton.timber:timber:$timber_version"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation("androidx.core:core-ktx:1.1.0")
+    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.21")
 
-    implementation project(":android-smsmms")
+    implementation(project(":android-smsmms"))
 }
 
 repositories {
     google()
-    maven { url "https://jitpack.io" }
-    maven { url 'https://maven.google.com' }
+    maven(url = "https://jitpack.io")
+    maven(url = "https://maven.google.com")
     maven {
-        name 'glide-snapshot'
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
+        name = "glide-snapshot"
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
     mavenCentral()
 }
