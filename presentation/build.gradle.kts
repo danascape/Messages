@@ -221,15 +221,3 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
 }
-
-// Check to make sure that the keystore file is present when building a release
-//gradle.taskGraph.whenReady { taskGraph ->
-//    val needsReleaseAssemble = taskGraph.hasTask(":assembleRelease") ||
-//            taskGraph.allTasks.any { it.name == "assembleRelease" }
-//    if (needsReleaseAssemble &&
-//        !file("./.gradle/.gradlerc").exists() &&
-//        System.getenv("CI") != "true"
-//    ) {
-//        throw GradleException("Keystore properties file not found")
-//    }
-//}

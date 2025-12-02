@@ -47,14 +47,3 @@ dependencies {
     implementation("com.squareup.okhttp:okhttp-urlconnection:2.5.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.21")
 }
-
-repositories {
-    google()
-    maven(url = "https://jitpack.io")
-    maven(url = "https://maven.google.com")
-    maven {
-        name = "glide-snapshot"
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-    }
-    mavenCentral()
-}

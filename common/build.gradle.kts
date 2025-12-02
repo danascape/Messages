@@ -42,14 +42,3 @@ dependencies {
 
     implementation(project(":android-smsmms"))
 }
-
-repositories {
-    google()
-    maven(url = "https://jitpack.io")
-    maven(url = "https://maven.google.com")
-    maven {
-        name = "glide-snapshot"
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-    }
-    mavenCentral()
-}
