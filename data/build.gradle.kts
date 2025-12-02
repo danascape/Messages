@@ -44,7 +44,7 @@ android {
 dependencies {
     // androidx
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.core:core-ktx:1.1.0")
+    implementation(libs.androidx.ktx)
     implementation("androidx.exifinterface:exifinterface:1.0.0")
     implementation("androidx.documentfile:documentfile:1.0.1")
 

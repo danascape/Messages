@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.1.0")
+    implementation(libs.androidx.ktx)
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.squareup.okhttp:okhttp:2.5.0")
     implementation("com.squareup.okhttp:okhttp-urlconnection:2.5.0")

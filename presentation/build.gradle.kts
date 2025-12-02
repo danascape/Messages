@@ -130,7 +130,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.emoji2:emoji2-bundled:1.4.0")
     implementation("androidx.constraintlayout:constraintlayout:1.1.3")
-    implementation("androidx.core:core-ktx:1.1.0")
+    implementation(libs.androidx.ktx)
     implementation("androidx.viewpager2:viewpager2:1.0.0-beta05")
     implementation("com.google.android.material:material:1.0.0")
     implementation("androidx.work:work-runtime-ktx:2.8.0")

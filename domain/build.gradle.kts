@@ -68,7 +68,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.4.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
 
-    implementation("androidx.core:core-ktx:1.1.0")
+    implementation(libs.androidx.ktx)
     implementation("com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.21")
