@@ -212,7 +212,7 @@ dependencies {
     implementation("com.github.chrisbanes:photoview:2.1.4")
     implementation("com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3")
     implementation("com.github.google:flexbox-layout:0.3.1")
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation(libs.timber)
     implementation("com.squareup.moshi:moshi-kotlin:1.8.0")
     implementation("me.leolin:ShortcutBadger:1.1.22")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.21")

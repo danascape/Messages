@@ -84,7 +84,7 @@ dependencies {
 
     implementation("com.callcontrol:datashare:1.3.0")
     implementation("com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3")
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation(libs.timber)
     implementation("com.squareup.moshi:moshi:1.8.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
