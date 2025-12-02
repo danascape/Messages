@@ -43,7 +43,7 @@ android {
 dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.timber)
-    implementation("com.squareup.okhttp:okhttp:2.5.0")
-    implementation("com.squareup.okhttp:okhttp-urlconnection:2.5.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.21")
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.urlconnection)
+    implementation(libs.kotlin.stdlib)
 }

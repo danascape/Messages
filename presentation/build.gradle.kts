@@ -103,52 +103,52 @@ androidExtensions {
 
 dependencies {
     // lifecycle
-    implementation("androidx.lifecycle:lifecycle-extensions:2.1.0")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.1.0")
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.lifecycle.common.java8)
 
     // androidx
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.emoji2:emoji2-bundled:1.4.0")
-    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.emoji2.bundled)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ktx)
-    implementation("androidx.viewpager2:viewpager2:1.0.0-beta05")
-    implementation("com.google.android.material:material:1.0.0")
-    implementation("androidx.work:work-runtime-ktx:2.8.0")
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.material)
+    implementation(libs.androidx.work.runtime.ktx)
 
     // conductor
-    implementation("com.bluelinelabs:conductor:2.1.5")
-    implementation("com.bluelinelabs:conductor-archlifecycle:2.1.5")
+    implementation(libs.conductor)
+    implementation(libs.conductor.archlifecycle)
 
     // glide
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    kapt("com.github.bumptech.glide:compiler:4.16.0")
+    implementation(libs.glide)
+    kapt(libs.compiler)
 
     // exoplayer
-    implementation("com.github.google.ExoPlayer:exoplayer-core:r2.9.0")
+    implementation(libs.exoplayer.core)
     implementation("com.github.google.ExoPlayer:exoplayer-ui:r2.9.0") {
-        // Kotlin-safe exclude
         exclude(mapOf("group" to "com.android.support", "module" to "support-media-compat"))
     }
 
     // rxbinding
-    implementation("com.jakewharton.rxbinding2:rxbinding-kotlin:2.0.0")
-    implementation("com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:2.0.0")
+    implementation(libs.rxbinding.kotlin)
+    implementation(libs.rxbinding.support.v4.kotlin)
 
     // autodispose
-    implementation("com.uber.autodispose:autodispose-android-archcomponents:1.3.0")
-    implementation("com.uber.autodispose:autodispose-android-archcomponents-test:1.3.0")
-    implementation("com.uber.autodispose:autodispose-android:1.3.0")
-    implementation("com.uber.autodispose:autodispose:1.3.0")
-    implementation("com.uber.autodispose:autodispose-lifecycle:1.3.0")
+    implementation(libs.autodispose.android.archcomponents)
+    implementation(libs.autodispose.android.archcomponents.test)
+    implementation(libs.autodispose.android)
+    implementation(libs.autodispose)
+    implementation(libs.autodispose.lifecycle)
 
     // dagger
-    implementation("com.google.dagger:dagger:2.18")
-    implementation("com.google.dagger:dagger-android-support:2.18")
-    kapt("com.google.dagger:dagger-compiler:2.18")
-    kapt("com.google.dagger:dagger-android-processor:2.18")
+    implementation(libs.dagger)
+    implementation(libs.dagger.android.support)
+    kapt(libs.dagger.compiler)
+    kapt(libs.dagger.android.processor)
+
     // Resolve jdk8+ Generation Annotations - javax annotation does not exist
-    implementation("com.github.pengrad:jdk9-deps:1ffe84c468")
-    implementation("javax.annotation:javax.annotation-api:1.3.2")
+    implementation(libs.jdk9.deps)
+    implementation(libs.javax.annotation.api)
 
     // ezvcard (multiple excludes)
     implementation("com.googlecode.ez-vcard:ez-vcard:0.10.4") {
@@ -158,44 +158,44 @@ dependencies {
     }
 
     // realm
-    implementation("com.github.realm:realm-android-adapters:3.1.0")
-    kapt("io.realm:realm-annotations:10.15.0")
-    kapt("io.realm:realm-annotations-processor:10.15.0")
+    implementation(libs.realm.android.adapters)
+    kapt(libs.realm.annotations)
+    kapt(libs.realm.annotations.processor)
 
     // rxjava
-    implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
-    implementation("io.reactivex.rxjava2:rxjava:2.1.4")
-    implementation("io.reactivex.rxjava2:rxkotlin:2.1.0")
-    implementation("com.uber.rxdogtag:rxdogtag:0.2.0")
-    implementation("com.uber.rxdogtag:rxdogtag-autodispose:0.2.0")
+    implementation(libs.rxandroid)
+    implementation(libs.rxjava)
+    implementation(libs.rxkotlin)
+    implementation(libs.rxdogtag)
+    implementation(libs.rxdogtag.autodispose)
 
     // testing
     androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha3") {
         exclude(mapOf("group" to "com.android.support", "module" to "support-annotations"))
     }
-    androidTestImplementation("org.mockito:mockito-android:2.18.3")
-    testImplementation("androidx.test:runner:1.1.0-alpha3")
-    testImplementation("junit:junit:4.12")
-    testImplementation("org.mockito:mockito-core:2.18.3")
+    androidTestImplementation(libs.mockito.android)
+    testImplementation(libs.androidx.runner)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
 
     // moshi
-    implementation("com.squareup.moshi:moshi:1.8.0")
-    debugImplementation("com.squareup.moshi:moshi-kotlin:1.8.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")
+    implementation(libs.moshi)
+    debugImplementation(libs.moshi.kotlin)
+    kapt(libs.moshi.kotlin.codegen)
 
     // coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.4.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.rx2)
+    implementation(libs.kotlinx.coroutines.reactive)
 
-    implementation("com.github.chrisbanes:photoview:2.1.4")
-    implementation("com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3")
-    implementation("com.github.google:flexbox-layout:0.3.1")
+    implementation(libs.photoview)
+    implementation(libs.rx.preferences)
+    implementation(libs.flexbox.layout)
     implementation(libs.timber)
-    implementation("com.squareup.moshi:moshi-kotlin:1.8.0")
-    implementation("me.leolin:ShortcutBadger:1.1.22")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.21")
+    implementation(libs.moshi.kotlin)
+    implementation(libs.shortcutbadger)
+    implementation(libs.kotlin.stdlib.jdk7)
     implementation(project(":android-smsmms"))
     implementation(project(":common"))
     implementation(project(":data"))

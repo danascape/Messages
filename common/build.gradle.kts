@@ -38,7 +38,7 @@ android {
 dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.timber)
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.21")
+    implementation(libs.kotlin.stdlib)
 
     implementation(project(":android-smsmms"))
 }
