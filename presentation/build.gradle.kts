@@ -188,7 +188,7 @@ dependencies {
 
     implementation(libs.photoview)
     implementation(libs.rx.preferences)
-    implementation(libs.flexbox.layout)
+    implementation(libs.flexbox)
     implementation(libs.timber)
     implementation(libs.moshi.kotlin)
     implementation(libs.shortcutbadger)
