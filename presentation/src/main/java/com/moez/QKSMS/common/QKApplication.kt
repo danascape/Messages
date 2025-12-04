@@ -32,11 +32,10 @@ import androidx.work.WorkerFactory
 import com.moez.QKSMS.manager.SpeakManager
 import com.uber.rxdogtag.RxDogTag
 import com.uber.rxdogtag.autodispose.AutoDisposeConfigurer
+import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.HasBroadcastReceiverInjector
-import dagger.android.HasServiceInjector
+import dagger.android.HasAndroidInjector
 import org.prauga.messages.R
 import org.prauga.messages.app.utils.AppUtil.applyEdgeToEdgeInsets
 import org.prauga.messages.common.util.FileLoggingTree
@@ -57,8 +56,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverInjector,
-    HasServiceInjector {
+class QKApplication : Application(), HasAndroidInjector {
 
     /**
      * Inject these so that they are forced to initialize
@@ -71,13 +69,7 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
     lateinit var billingManager: BillingManager
 
     @Inject
-    lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
-
-    @Inject
-    lateinit var dispatchingBroadcastReceiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
-
-    @Inject
-    lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     lateinit var fileLoggingTree: FileLoggingTree
@@ -179,15 +171,7 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
         })
     }
 
-    override fun activityInjector(): AndroidInjector<Activity> {
-        return dispatchingActivityInjector
-    }
-
-    override fun broadcastReceiverInjector(): AndroidInjector<BroadcastReceiver> {
-        return dispatchingBroadcastReceiverInjector
-    }
-
-    override fun serviceInjector(): AndroidInjector<Service> {
-        return dispatchingServiceInjector
+    override fun androidInjector(): AndroidInjector<Any> {
+        return dispatchingAndroidInjector
     }
 }
