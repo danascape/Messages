@@ -167,7 +167,6 @@ class ComposeViewModel @Inject constructor(
             .skipWhile { recipients -> recipients.isEmpty() }
             .map { recipients -> recipients.map { it.address } }
             .distinctUntilChanged()
-            .doOnNext { newState { copy(loading = true) } }
             .observeOn(Schedulers.io())  // background thread for possible long telephony running
             .doOnNext { addresses -> conversationRepo.getOrCreateConversation(addresses) }
             .observeOn(AndroidSchedulers.mainThread())
@@ -177,7 +176,6 @@ class ComposeViewModel @Inject constructor(
                     .filter { conversations -> conversations.isLoaded }
                     .mapNotNull { conversationRepo.getConversation(addresses)?.id }
                     .distinctUntilChanged()
-                    .doOnNext { newState { copy(loading = false) } }
                     .switchMap { conversationId ->
                         conversationRepo.getConversationAsync(conversationId).asObservable()
                     }
