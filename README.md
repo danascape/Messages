@@ -6,12 +6,12 @@ Messages is an open source replacement to the [stock messaging app](https://gith
 - Intuitive UI
 - Scheduled Messages
 - Message Backup
-- Speech to Text and Text to Speech integrated within the app
 - Message Blocking and Archiving
 - Voice Messages
 - Attachments of any type of file
 - Message Sorting
 - Delayed Sending
+- Automatic OTP Detection
 
 ## Download
 
