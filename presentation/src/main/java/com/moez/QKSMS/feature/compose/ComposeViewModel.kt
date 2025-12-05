@@ -302,11 +302,6 @@ class ComposeViewModel @Inject constructor(
 
         view.chipsSelectedIntent
                 .withLatestFrom(selectedChips) { hashmap, chips ->
-                    // If there's no contacts already selected, and the user cancelled the contact
-                    // selection, close the activity
-                    if (hashmap.isEmpty() && chips.isEmpty()) {
-                        newState { copy(hasError = true) }
-                    }
                     // Filter out any numbers that are already selected
                     hashmap.filter { (address) ->
                         chips.none { recipient -> phoneNumberUtils.compare(address, recipient.address) }

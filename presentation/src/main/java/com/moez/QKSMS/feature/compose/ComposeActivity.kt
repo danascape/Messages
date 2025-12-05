@@ -161,6 +161,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[ComposeViewModel::class.java] }
 
     private var cameraDestination: Uri? = null
+    private var isSelection = false
 
     private fun getSeekBarUpdater(): ObservableSubscribeProxy<Long> {
         return Observable.interval(500, TimeUnit.MILLISECONDS)
@@ -610,6 +611,8 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
     override fun showContacts(sharing: Boolean, chips: List<Recipient>) {
         binding.message.hideKeyboard()
+        // Track if this is the initial contact selection (no existing chips)
+        isSelection = chips.isEmpty()
         val serialized = HashMap(chips.associate { chip -> chip.address to chip.contact?.lookupKey })
         val intent = Intent(this, ContactsActivity::class.java)
             .putExtra(ContactsActivity.SharingKey, sharing)
@@ -736,9 +739,19 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
         when (requestCode) {
             ComposeView.SelectContactRequestCode -> {
-                chipsSelectedIntent.onNext(data?.getSerializableExtra(ContactsActivity.ChipsKey)
+                val selectedContacts = data?.getSerializableExtra(ContactsActivity.ChipsKey)
                     ?.let { serializable -> serializable as? HashMap<String, String?> }
-                    ?: hashMapOf())
+                    ?: hashMapOf()
+
+                // finish immediately to avoid showing empty compose screen
+                if (isSelection && selectedContacts.isEmpty()) {
+                    finish()
+                    return
+                }
+
+                // Reset the flag after handling
+                isSelection = false
+                chipsSelectedIntent.onNext(selectedContacts)
             }
 
             ComposeView.TakePhotoRequestCode -> {

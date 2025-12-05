@@ -51,7 +51,6 @@ androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", vers
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
 androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "lifecycle-extensions" }
 androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycle-extensions" }
-androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime-ktx" }
 androidx-work-rxjava2 = { module = "androidx.work:work-rxjava2", version.ref = "work-runtime-ktx" }
@@ -73,7 +72,6 @@ flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbo
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 javax-annotation-api = { module = "javax.annotation:javax.annotation-api", version.ref = "javax-annotation-api" }
 jdk9-deps = { module = "com.github.pengrad:jdk9-deps", version.ref = "jdk9-deps" }
-junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin-stdlib" }
 kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin-stdlib" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-core" }
@@ -104,6 +102,10 @@ rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava" }
 rxkotlin = { module = "io.reactivex.rxjava2:rxkotlin", version.ref = "rxkotlin" }
 shortcutbadger = { module = "me.leolin:ShortcutBadger", version.ref = "shortcutbadger" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+
+# Tests
+androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+junit = { module = "junit:junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

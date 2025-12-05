@@ -123,7 +123,14 @@ class ContactsActivity :
     override fun finish(result: HashMap<String, String?>) {
         binding.search.hideKeyboard()
         val intent = Intent().putExtra(ChipsKey, result)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
+        setResult(RESULT_OK, intent)
+        super.finish()
+    }
+
+    override fun finish() {
+        // Set empty result if no result was already set
+        val intent = Intent().putExtra(ChipsKey, hashMapOf<String, String?>())
+        setResult(RESULT_OK, intent)
+        super.finish()
     }
 }
