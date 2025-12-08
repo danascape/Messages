@@ -41,7 +41,7 @@ Contributions welcome! Please see the [contributing guidelines](/CONTRIBUTING.md
 If you'd like to add translations to QUIK, please join the project on [Weblate](https://hosted.weblate.org/engage/pvot-messages/)! Translations that are committed directly to source files will not be accepted. For more information see the [translation guidelines](/CONTRIBUTING.md#translate).
 
 <a href="https://hosted.weblate.org/engage/pvot-messages/">
-<img src="https://hosted.weblate.org/widget/pvot-messages/app-strings/svg-badge.svg" alt="Translation status" />
+<img src="https://hosted.weblate.org/widget/pvot-messages/app-strings/multi-auto.svg" alt="Translation status" />
 </a>
 
 ## Thank you
