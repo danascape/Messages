@@ -26,9 +26,9 @@
     android:nextFocusRight="@+id/compose"
     android:orientation="horizontal"
     android:paddingStart="12dp"
-    android:paddingTop="10dp"
+    android:paddingTop="5dp"
     android:paddingEnd="16dp"
-    android:paddingBottom="10dp">
+    android:paddingBottom="3dp">
 
     <org.prauga.messages.common.widget.GroupAvatarView
         android:id="@+id/avatars"
@@ -52,12 +52,10 @@
         android:lines="1"
         android:textDirection="ltr"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@id/snippet"
         app:layout_constraintEnd_toStartOf="@id/date"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/avatars"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="@id/avatars"
         tools:text="@tools:sample/full_names" />
 
     <org.prauga.messages.common.widget.QkTextView
@@ -68,8 +66,8 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="7dp"
         android:ellipsize="end"
-        android:maxLines="1"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:maxLines="2"
+        android:minLines="2"
         app:layout_constraintEnd_toStartOf="@id/scheduled"
         app:layout_constraintStart_toStartOf="@id/title"
         app:layout_constraintTop_toBottomOf="@id/title"
@@ -83,10 +81,10 @@
         android:paddingStart="4dp"
         android:paddingTop="2dp"
         android:src="@drawable/ic_baseline_push_pin_24"
-        android:tint="?android:attr/textColorTertiary"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/scheduled"
         app:layout_constraintTop_toTopOf="@id/snippet"
+        app:tint="?android:attr/textColorTertiary"
         tools:visibility="visible" />
 
     <ImageView
@@ -96,10 +94,10 @@
         android:layout_marginTop="2dp"
         android:paddingStart="4dp"
         android:src="@drawable/ic_event_black_24dp"
-        android:tint="?android:attr/textColorTertiary"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/snippet"
+        app:tint="?android:attr/textColorTertiary"
         tools:visibility="visible" />
 
     <ImageView
@@ -124,20 +122,30 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="@id/title"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@id/openChat"
+        app:layout_constraintTop_toTopOf="@id/title"
         tools:text="Oct 11" />
 
     <ImageView
         android:id="@+id/openChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_right"
-        android:tint="?android:attr/textColorSecondary"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
         android:paddingStart="5dp"
+        android:src="@drawable/ic_arrow_right"
+        app:layout_constraintBottom_toBottomOf="@id/title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="100" />
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:tint="?android:attr/textColorSecondary" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@+id/snippet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
