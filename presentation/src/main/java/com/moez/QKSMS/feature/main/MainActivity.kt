@@ -174,7 +174,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             }
         }
 
-        binding.changeDefaultSmsButton.setOnClickListener {
+        binding.btnChangeDefaultSms.setOnClickListener {
             requestDefaultSms()
         }
 
