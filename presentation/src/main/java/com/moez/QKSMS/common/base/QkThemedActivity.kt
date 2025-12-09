@@ -106,17 +106,17 @@ abstract class QkThemedActivity<Vb : ViewBinding>(
                     .startWith(Optional(conversation.recipients.firstOrNull()))
                     .distinctUntilChanged()
             }
-        }
+    }
         .switchMap { colors.themeObservable(it.value) }
 
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(getActivityThemeRes(prefs.black.get()))
+        setTheme(getActivityThemeRes())
         super.onCreate(savedInstanceState)
 
         // When certain preferences change, we need to recreate the activity
         val triggers =
-            listOf(prefs.nightMode, prefs.night, prefs.black, prefs.textSize, prefs.systemFont)
+            listOf(prefs.nightMode, prefs.night, prefs.textSize, prefs.systemFont)
         Observable.merge(triggers.map { it.asObservable().skip(1) })
             .debounce(400, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
@@ -170,8 +170,5 @@ abstract class QkThemedActivity<Vb : ViewBinding>(
     /**
      * This can be overridden in case an activity does not want to use the default themes
      */
-    open fun getActivityThemeRes(black: Boolean) = when {
-        black -> R.style.AppTheme_Black
-        else -> R.style.AppTheme
-    }
+    open fun getActivityThemeRes(): Int = R.style.AppTheme
 }

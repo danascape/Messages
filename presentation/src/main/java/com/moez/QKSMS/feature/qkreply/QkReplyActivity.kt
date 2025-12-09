@@ -183,8 +183,5 @@ class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivity
         return true
     }
 
-    override fun getActivityThemeRes(black: Boolean) = when {
-        black -> R.style.AppThemeDialog_Black
-        else -> R.style.AppThemeDialog
-    }
+    override fun getActivityThemeRes(): Int = R.style.AppThemeDialog
 }

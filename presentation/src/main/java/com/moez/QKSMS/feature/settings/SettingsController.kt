@@ -83,7 +83,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     private lateinit var night: PreferenceView
     private lateinit var nightStart: PreferenceView
     private lateinit var nightEnd: PreferenceView
-    private lateinit var black: PreferenceView
     private lateinit var autoEmoji: PreferenceView
     private lateinit var delayed: PreferenceView
     private lateinit var delivery: PreferenceView
@@ -144,7 +143,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         night = view.findViewById(R.id.night)
         nightStart = view.findViewById(R.id.nightStart)
         nightEnd = view.findViewById(R.id.nightEnd)
-        black = view.findViewById(R.id.black)
         autoEmoji = view.findViewById(R.id.autoEmoji)
         delayed = view.findViewById(R.id.delayed)
         delivery = view.findViewById(R.id.delivery)
@@ -225,9 +223,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         nightStart.summary = state.nightStart
         nightEnd.setVisible(state.nightModeId == Preferences.NIGHT_MODE_AUTO)
         nightEnd.summary = state.nightEnd
-
-        //black.setVisible(state.nightModeId != Preferences.NIGHT_MODE_OFF)
-        //black.checkbox()?.isChecked = state.black
 
         autoEmoji.checkbox()?.isChecked = state.autoEmojiEnabled
 

@@ -45,10 +45,6 @@ class NightModeManager @Inject constructor(
             Preferences.NIGHT_MODE_SYSTEM -> {
                 val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
                 val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                if (isSystemDarkMode) {
-                    prefs.black.set(true)
-                }
-
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
 
@@ -57,7 +53,6 @@ class NightModeManager @Inject constructor(
             }
 
             Preferences.NIGHT_MODE_ON -> {
-                prefs.black.set(true)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
 
@@ -68,10 +63,6 @@ class NightModeManager @Inject constructor(
                 // If the last nightStart was more recent than the last nightEnd, then it's night time
                 val night = nightStartTime > nightEndTime
                 prefs.night.set(night)
-
-                if (night) {
-                    prefs.black.set(true)
-                }
 
                 AppCompatDelegate.setDefaultNightMode(when (night) {
                     true -> AppCompatDelegate.MODE_NIGHT_YES
@@ -89,18 +80,6 @@ class NightModeManager @Inject constructor(
         if (mode != Preferences.NIGHT_MODE_AUTO) {
             val isNightMode = mode == Preferences.NIGHT_MODE_ON
             prefs.night.set(isNightMode)
-
-            if (isNightMode) {
-                prefs.black.set(true)
-            }
-
-            if (mode == Preferences.NIGHT_MODE_SYSTEM) {
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                if (isSystemDarkMode) {
-                    prefs.black.set(true)
-                }
-            }
 
             AppCompatDelegate.setDefaultNightMode(when (mode) {
                 Preferences.NIGHT_MODE_OFF -> AppCompatDelegate.MODE_NIGHT_NO

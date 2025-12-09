@@ -54,14 +54,6 @@
             tools:summary="Automatic" />
 
         <org.prauga.messages.common.widget.PreferenceView
-            android:id="@+id/black"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:title="@string/settings_black_title"
-            app:widget="@layout/settings_switch_widget" />
-
-        <org.prauga.messages.common.widget.PreferenceView
             android:id="@+id/nightStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

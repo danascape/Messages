@@ -51,10 +51,7 @@ class MigratePreferences @Inject constructor(
                         autoNight -> nightModeManager.updateNightMode(Preferences.NIGHT_MODE_AUTO)
                         background == "light" -> nightModeManager.updateNightMode(Preferences.NIGHT_MODE_OFF)
                         background == "grey" -> nightModeManager.updateNightMode(Preferences.NIGHT_MODE_ON)
-                        background == "black" -> {
-                            nightModeManager.updateNightMode(Preferences.NIGHT_MODE_ON)
-                            prefs.black.set(true)
-                        }
+                        background == "black" -> nightModeManager.updateNightMode(Preferences.NIGHT_MODE_ON)
                     }
 
                     // Delivery

@@ -81,9 +81,6 @@ class SettingsPresenter @Inject constructor(
                 .map { millis -> dateFormatter.getTimestamp(millis) }
                 .subscribe { nightEnd -> newState { copy(nightEnd = nightEnd) } }
 
-        disposables += prefs.black.asObservable()
-                .subscribe { black -> newState { copy(black = black) } }
-
         disposables += prefs.notifications().asObservable()
                 .subscribe { enabled -> newState { copy(notificationsEnabled = enabled) } }
 
@@ -180,8 +177,6 @@ class SettingsPresenter @Inject constructor(
                             val date = nightModeManager.parseTime(prefs.nightEnd.get())
                             view.showEndTimePicker(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE))
                         }
-
-                        R.id.black -> prefs.black.set(!prefs.black.get())
 
                         R.id.autoEmoji -> prefs.autoEmoji.set(!prefs.autoEmoji.get())
 
