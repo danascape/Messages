@@ -88,7 +88,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     private lateinit var unreadAtTop: PreferenceView
     private lateinit var signature: PreferenceView
     private lateinit var systemFont: PreferenceView
-    private lateinit var showStt: PreferenceView
     private lateinit var unicode: PreferenceView
     private lateinit var mobileOnly: PreferenceView
     private lateinit var autoDelete: PreferenceView
@@ -147,7 +146,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         unreadAtTop = view.findViewById(R.id.unreadAtTop)
         signature = view.findViewById(R.id.signature)
         systemFont = view.findViewById(R.id.systemFont)
-        showStt = view.findViewById(R.id.showStt)
         unicode = view.findViewById(R.id.unicode)
         mobileOnly = view.findViewById(R.id.mobileOnly)
         autoDelete = view.findViewById(R.id.autoDelete)
@@ -231,8 +229,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
                 ?: context.getString(R.string.settings_signature_summary)
 
         systemFont.checkbox()?.isChecked = state.systemFontEnabled
-
-        showStt.checkbox()?.isChecked = state.showStt
 
         unicode.checkbox()?.isChecked = state.stripUnicodeEnabled
         mobileOnly.checkbox()?.isChecked = state.mobileOnly

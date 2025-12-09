@@ -38,7 +38,6 @@ interface ComposeView : QkView<ComposeState> {
         const val TakePhotoRequestCode = 1
         const val AttachContactRequestCode = 3
         const val AttachAFileRequestCode = 4
-        const val SpeechRecognitionRequestCode = 5
 
         const val CameraDestinationKey = "camera_destination"
     }
@@ -77,7 +76,6 @@ interface ComposeView : QkView<ComposeState> {
     val confirmDeleteIntent: Observable<List<Long>>
     val clearCurrentMessageIntent: Subject<Boolean>
     val messageLinkAskIntent: Observable<Uri>
-    val speechRecogniserIntent: Observable<*>
     val shadeIntent: Observable<Unit>
     val recordAudioStartStopRecording: Subject<Boolean>
     val recordAnAudioMessage: Observable<Unit>
@@ -111,6 +109,5 @@ interface ComposeView : QkView<ComposeState> {
     fun showQksmsPlusSnackbar(@StringRes message: Int)
     fun showDeleteDialog( messages: List<Long>)
     fun showClearCurrentMessageDialog()
-    fun startSpeechRecognition()
     fun focusMessage()
 }
