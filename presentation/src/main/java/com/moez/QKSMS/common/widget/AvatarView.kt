@@ -25,6 +25,7 @@ import android.widget.FrameLayout
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.getColorCompat
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.databinding.AvatarViewBinding
@@ -55,7 +56,7 @@ class AvatarView @JvmOverloads constructor(
         theme = colors.theme()
 
         layout = AvatarViewBinding.inflate(LayoutInflater.from(context), this)
-        setBackgroundResource(R.drawable.circle)
+        setBackgroundResource(R.drawable.avatar_circle)
         clipToOutline = true
     }
 
@@ -81,9 +82,8 @@ class AvatarView @JvmOverloads constructor(
 
     private fun updateView() {
         // Apply theme
-        setBackgroundTint(theme.theme)
         layout.initial.setTextColor(theme.textPrimary)
-        layout.icon.setTint(theme.textPrimary)
+        layout.icon.setTint(context.getColorCompat(R.color.avatar_icon_color))
 
         val initials = fullName
                 ?.substringBefore(',')

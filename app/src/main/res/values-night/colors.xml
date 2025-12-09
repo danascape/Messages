@@ -38,4 +38,8 @@
     <color name="home_filter_chip_selected">#6b5cee</color>
     <color name="home_filter_chip_background">#313131</color>
     <color name="home_filter_chip_text_unselected">@android:color/white</color>
+
+    <color name="avatar_view_color">#45556c</color>
+    <color name="avatar_icon_color">@android:color/white</color>
+
 </resources>

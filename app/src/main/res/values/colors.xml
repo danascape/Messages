@@ -41,6 +41,8 @@
     <color name="home_filter_chip_text_unselected">#1a1a1a</color>
 
     <color name="unread_view_color">#3478f6</color>
+    <color name="avatar_view_color">#f0f0f0</color>
+    <color name="avatar_icon_color">#6B5CEE</color>
 
     <!-- Swipe action color -->
     <color name="swipe_delete">#E53935</color>
