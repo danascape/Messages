@@ -36,6 +36,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.lifecycle.Lifecycle
@@ -47,7 +48,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -73,7 +74,6 @@ import org.prauga.messages.feature.conversations.ConversationsAdapter
 import org.prauga.messages.manager.ChangelogManager
 import org.prauga.messages.repository.SyncRepository
 import javax.inject.Inject
-import androidx.core.view.get
 
 class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::inflate), MainView {
 
@@ -170,7 +170,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
         (binding.snackbar as? ViewStub)?.setOnInflateListener { _, inflated ->
             inflated.findViewById<View>(R.id.snackbarButton).clicks()
-                .autoDisposable(scope(Lifecycle.Event.ON_DESTROY))
+                .autoDispose(scope(Lifecycle.Event.ON_DESTROY))
                 .subscribe(snackbarButtonIntent)
         }
 
@@ -193,7 +193,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         }
 
         binding.cVTopBar3.clicks()
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe {
                 showDrawerMenu()
             }
@@ -211,8 +211,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                         -binding.cVTopBar2.height.toFloat() - 8f * resources.displayMetrics.density
                     binding.cVTopBar2.animate().translationY(translationY).setDuration(200).start()
                     binding.cVTopBar3.animate().translationY(translationY).setDuration(200).start()
-                    binding.filterGroup.animate().translationY(translationY).setDuration(200).start()
-                    binding.recyclerView.animate().translationY(translationY).setDuration(200).start()
+                    binding.filterGroup.animate().translationY(translationY).setDuration(200)
+                        .start()
+                    binding.recyclerView.animate().translationY(translationY).setDuration(200)
+                        .start()
                 } else if (dy < 0 && binding.cVTopBar2.translationY != 0f) {
                     // Show
                     binding.cVTopBar2.animate().translationY(0f).setDuration(200).start()
@@ -224,11 +226,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         })
 
         // Don't allow clicks to pass through the drawer layout
-        binding.drawer.root.clicks().autoDisposable(scope()).subscribe()
+        binding.drawer.root.clicks().autoDispose(scope()).subscribe()
 
         // Set the theme color tint to the recyclerView, progressbar, and FAB
         theme
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { theme ->
                 // Set the color for the drawer icons
                 val states = arrayOf(
@@ -580,7 +582,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         dialog.show()
 
         theme.take(1)
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { theme ->
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)

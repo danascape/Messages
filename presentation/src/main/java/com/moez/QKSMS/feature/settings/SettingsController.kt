@@ -58,6 +58,7 @@ import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.ScrollView
+import com.uber.autodispose.autoDispose
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -126,8 +127,8 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         layoutRes = R.layout.settings_controller
 
         colors.themeObservable()
-                .autoDisposable(scope())
-                .subscribe { activity?.recreate() }
+            .autoDispose(scope())
+            .subscribe { activity?.recreate() }
     }
 
     override fun onViewCreated() {
