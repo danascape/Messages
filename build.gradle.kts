@@ -1,9 +1,10 @@
-import org.jetbrains.kotlin.gradle.plugin.KaptExtension
+import com.android.build.gradle.BaseExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 // Needed until we upstream
 buildscript {
     dependencies {
-        classpath("io.realm:realm-gradle-plugin:10.15.0")
+        classpath("io.realm:realm-gradle-plugin:10.19.0")
         classpath("com.google.firebase:firebase-crashlytics-gradle:2.5.2")
     }
 }
@@ -11,8 +12,8 @@ buildscript {
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.android) version "1.7.21" apply false
-    alias(libs.plugins.google.services) version "4.3.14" apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.google.services) apply false
 }
 
 tasks.register<Delete>("clean") {
@@ -20,11 +21,23 @@ tasks.register<Delete>("clean") {
 }
 
 subprojects {
-    afterEvaluate {
-        extensions.findByType(KaptExtension::class.java)?.apply {
-            javacOptions {
-                option("-source", "8")
-                option("-target", "8")
+    tasks.withType<KotlinCompile>().configureEach {
+        kotlinOptions.jvmTarget = "17"
+    }
+
+    plugins.withId("com.android.application") {
+        extensions.configure(BaseExtension::class.java) {
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_17
+                targetCompatibility = JavaVersion.VERSION_17
+            }
+        }
+    }
+    plugins.withId("com.android.library") {
+        extensions.configure(BaseExtension::class.java) {
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_17
+                targetCompatibility = JavaVersion.VERSION_17
             }
         }
     }
