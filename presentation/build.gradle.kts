@@ -90,8 +90,11 @@ android {
 
 dependencies {
     // lifecycle
-    implementation(libs.androidx.lifecycle.extensions)
-    implementation(libs.androidx.lifecycle.common.java8)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.common.java8)
+    implementation(libs.lifecycle.extensions)
 
     // androidx
     implementation(libs.androidx.appcompat)
