@@ -28,11 +28,12 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.jakewharton.rxbinding2.view.clicks
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
-import com.uber.autodispose.autoDispose
+import androidx.lifecycle.lifecycleScope
 import dagger.android.AndroidInjection
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 import org.prauga.messages.R
 import org.prauga.messages.common.QkDialog
 import org.prauga.messages.common.base.QkThemedActivity
@@ -40,9 +41,6 @@ import org.prauga.messages.common.util.extensions.animateLayoutChanges
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.databinding.NotificationPrefsActivityBinding
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 import javax.inject.Inject
 
 class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBinding>(
@@ -58,10 +56,17 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override val preferenceClickIntent: Subject<PreferenceView> = PublishSubject.create()
-    override val previewModeSelectedIntent by lazy { previewModeDialog.adapter.menuItemClicks }
-    override val ringtoneSelectedIntent: Subject<String> = PublishSubject.create()
-    override val actionsSelectedIntent by lazy { actionsDialog.adapter.menuItemClicks }
+    private val _preferenceClickIntent = MutableSharedFlow<PreferenceView>(extraBufferCapacity = 1)
+    private val _ringtoneSelectedIntent = MutableSharedFlow<String>(extraBufferCapacity = 1)
+
+    override val preferenceClickIntent: Flow<PreferenceView> = _preferenceClickIntent
+    override val previewModeSelectedIntent: Flow<Int> by lazy {
+        previewModeDialog.adapter.menuItemClicks.asFlow()
+    }
+    override val ringtoneSelectedIntent: Flow<String> = _ringtoneSelectedIntent
+    override val actionsSelectedIntent: Flow<Int> by lazy {
+        actionsDialog.adapter.menuItemClicks.asFlow()
+    }
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[NotificationPrefsViewModel::class.java]
@@ -91,10 +96,13 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
         (0 until binding.preferences.childCount)
             .map { index -> binding.preferences.getChildAt(index) }
             .mapNotNull { view -> view as? PreferenceView }
-            .map { preference -> preference.clicks().map { preference } }
-            .let { Observable.merge(it) }
-            .autoDispose(scope())
-            .subscribe(preferenceClickIntent)
+            .forEach { preference ->
+                preference.setOnClickListener {
+                    lifecycleScope.launch {
+                        _preferenceClickIntent.emit(preference)
+                    }
+                }
+            }
     }
 
     override fun render(state: NotificationPrefsState) {
@@ -148,8 +156,12 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 123 && resultCode == Activity.RESULT_OK) {
-            val uri: Uri? = data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-            ringtoneSelectedIntent.onNext(uri?.toString() ?: "")
+            val uri: Uri? =
+                data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            val value = uri?.toString() ?: ""
+            lifecycleScope.launch {
+                _ringtoneSelectedIntent.emit(value)
+            }
         }
     }
 }

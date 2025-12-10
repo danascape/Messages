@@ -62,7 +62,7 @@ class NotificationPrefsViewModel @Inject constructor(
 
         // notifications enabled
         viewModelScope.launch {
-            notifications.flow.collect { enabled ->
+            notifications.asFlow().collect { enabled ->
                 newState { copy(notificationsEnabled = enabled) }
             }
         }
