@@ -22,6 +22,7 @@ import android.content.Context
 import androidx.annotation.DrawableRes
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkPresenter
 import org.prauga.messages.util.Preferences
@@ -47,24 +48,24 @@ class SwipeActionsPresenter @Inject constructor(
         super.bindIntents(view)
 
         view.actionClicks()
-                .map { action ->
-                    when (action) {
-                        SwipeActionsView.Action.RIGHT -> prefs.swipeRight.get()
-                        SwipeActionsView.Action.LEFT -> prefs.swipeLeft.get()
-                    }
+            .map { action ->
+                when (action) {
+                    SwipeActionsView.Action.RIGHT -> prefs.swipeRight.get()
+                    SwipeActionsView.Action.LEFT -> prefs.swipeLeft.get()
                 }
-                .autoDisposable(view.scope())
-                .subscribe(view::showSwipeActions)
+            }
+            .autoDispose(view.scope())
+            .subscribe(view::showSwipeActions)
 
         view.actionSelected()
-                .withLatestFrom(view.actionClicks()) { actionId, action ->
-                    when (action) {
-                        SwipeActionsView.Action.RIGHT -> prefs.swipeRight.set(actionId)
-                        SwipeActionsView.Action.LEFT -> prefs.swipeLeft.set(actionId)
-                    }
+            .withLatestFrom(view.actionClicks()) { actionId, action ->
+                when (action) {
+                    SwipeActionsView.Action.RIGHT -> prefs.swipeRight.set(actionId)
+                    SwipeActionsView.Action.LEFT -> prefs.swipeLeft.set(actionId)
                 }
-                .autoDisposable(view.scope())
-                .subscribe()
+            }
+            .autoDispose(view.scope())
+            .subscribe()
     }
 
     @DrawableRes

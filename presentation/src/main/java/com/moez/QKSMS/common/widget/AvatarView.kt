@@ -26,7 +26,6 @@ import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.getColorCompat
-import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.databinding.AvatarViewBinding
 import org.prauga.messages.injection.appComponent
@@ -38,8 +37,10 @@ class AvatarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
 
-    @Inject lateinit var colors: Colors
-    @Inject lateinit var navigator: Navigator
+    @Inject
+    lateinit var colors: Colors
+    @Inject
+    lateinit var navigator: Navigator
 
     private var lookupKey: String? = null
     private var fullName: String? = null
@@ -86,15 +87,16 @@ class AvatarView @JvmOverloads constructor(
         layout.icon.setTint(context.getColorCompat(R.color.avatar_icon_color))
 
         val initials = fullName
-                ?.substringBefore(',')
-                ?.split(" ").orEmpty()
-                .filter { name -> name.isNotEmpty() }
-                .map { name -> name[0] }
-                .filter { initial -> initial.isLetterOrDigit() }
-                .map { initial -> initial.toString() }
+            ?.substringBefore(',')
+            ?.split(" ").orEmpty()
+            .filter { name -> name.isNotEmpty() }
+            .map { name -> name[0] }
+            .filter { initial -> initial.isLetterOrDigit() }
+            .map { initial -> initial.toString() }
 
         if (initials.isNotEmpty()) {
-            layout.initial.text = if (initials.size > 1) initials.first() + initials.last() else initials.first()
+            layout.initial.text =
+                if (initials.size > 1) initials.first() + initials.last() else initials.first()
             layout.icon.visibility = GONE
         } else {
             layout.initial.text = null
@@ -104,8 +106,8 @@ class AvatarView @JvmOverloads constructor(
         layout.photo.setImageDrawable(null)
         photoUri?.let { photoUri ->
             GlideApp.with(layout.photo)
-                    .load(photoUri)
-                    .into(layout.photo)
+                .load(photoUri)
+                .into(layout.photo)
         }
     }
 }

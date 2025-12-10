@@ -37,6 +37,7 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import android.widget.ImageView
 import android.widget.TextView
+import com.uber.autodispose.autoDispose
 import javax.inject.Inject
 
 class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState, SwipeActionsPresenter>(), SwipeActionsView {
@@ -87,10 +88,10 @@ class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState,
         left.postDelayed({ left.animateLayoutChanges = true }, 100)
 
         Observable.merge(
-                right.clicks().map { SwipeActionsView.Action.RIGHT },
-                left.clicks().map { SwipeActionsView.Action.LEFT })
-                .autoDisposable(scope())
-                .subscribe(actionClicks)
+            right.clicks().map { SwipeActionsView.Action.RIGHT },
+            left.clicks().map { SwipeActionsView.Action.LEFT })
+            .autoDispose(scope())
+            .subscribe(actionClicks)
     }
 
     override fun onAttach(view: View) {

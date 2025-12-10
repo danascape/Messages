@@ -31,9 +31,9 @@ import org.prauga.messages.common.base.QkBindingViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.databinding.SearchListItemBinding
 import org.prauga.messages.extensions.removeAccents
 import org.prauga.messages.model.SearchResult
-import org.prauga.messages.databinding.SearchListItemBinding
 import javax.inject.Inject
 
 class SearchAdapter @Inject constructor(
@@ -45,17 +45,26 @@ class SearchAdapter @Inject constructor(
 
     private val highlightColor: Int by lazy { colors.theme().highlight }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkBindingViewHolder<SearchListItemBinding> {
-        val binding = SearchListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): QkBindingViewHolder<SearchListItemBinding> {
+        val binding =
+            SearchListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding).apply {
             itemView.setOnClickListener {
                 val result = getItem(adapterPosition)
-                navigator.showConversation(result.conversation.id, result.query.takeIf { result.messages > 0 })
+                navigator.showConversation(
+                    result.conversation.id,
+                    result.query.takeIf { result.messages > 0 })
             }
         }
     }
 
-    override fun onBindViewHolder(holder: QkBindingViewHolder<SearchListItemBinding>, position: Int) {
+    override fun onBindViewHolder(
+        holder: QkBindingViewHolder<SearchListItemBinding>,
+        position: Int
+    ) {
         val previous = data.getOrNull(position - 1)
         val result = getItem(position)
 
@@ -66,7 +75,12 @@ class SearchAdapter @Inject constructor(
         var index = title.removeAccents().indexOf(query, ignoreCase = true)
 
         while (index >= 0) {
-            title.setSpan(BackgroundColorSpan(highlightColor), index, index + query.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            title.setSpan(
+                BackgroundColorSpan(highlightColor),
+                index,
+                index + query.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             index = title.indexOf(query, index + query.length, true)
         }
         holder.binding.title.text = title
@@ -76,7 +90,8 @@ class SearchAdapter @Inject constructor(
         when (result.messages == 0) {
             true -> {
                 holder.binding.date.setVisible(true)
-                holder.binding.date.text = dateFormatter.getConversationTimestamp(result.conversation.date)
+                holder.binding.date.text =
+                    dateFormatter.getConversationTimestamp(result.conversation.date)
                 holder.binding.snippet.text = when (result.conversation.me) {
                     true -> context.getString(R.string.main_sender_you, result.conversation.snippet)
                     false -> result.conversation.snippet
@@ -85,7 +100,8 @@ class SearchAdapter @Inject constructor(
 
             false -> {
                 holder.binding.date.setVisible(false)
-                holder.binding.snippet.text = context.getString(R.string.main_message_results, result.messages)
+                holder.binding.snippet.text =
+                    context.getString(R.string.main_message_results, result.messages)
             }
         }
     }
