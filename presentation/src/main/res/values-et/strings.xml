@@ -1,3 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="shortcut_compose_long_label">Uus vestlus</string>
+    <string name="shortcut_compose_short_label">Kirjuta</string>
+    <string name="title_notification_prefs">Teavitused</string>
+    <string name="title_theme">Kujundus</string>
+    <string name="setup_skip">Jäta vahele</string>
+    <string name="setup_next">Jätka</string>
+    <string name="menu_call">Helista</string>
+    <string name="menu_info">Üksikasjad</string>
+    <string name="menu_mms_part_share">Jaga</string>
+    <string name="menu_mms_part_forward">Edasta</string>
+    <string name="main_menu_clear">Tühjenda</string>
+    <string name="main_menu_archive">Arhiveeri</string>
+    <string name="main_menu_unarchive">Eemalda arhiivist</string>
+    <string name="main_menu_delete">Kustuta</string>
+    <string name="main_menu_unpin">Eemalda esiletõstmine</string>
+    <string name="main_menu_block">Blokeeri</string>
+    <string name="main_filter_all">Kõik</string>
+    <string name="main_filter_unread">Lugemata</string>
+    <string name="main_default_sms_change">Muuda</string>
+    <string name="main_permission_allow">Luba</string>
+    <string name="drawer_inbox">Sisendkaust</string>
+    <string name="drawer_archived">Arhiveeritud</string>
+    <string name="drawer_scheduled">Ajastatud</string>
 </resources>
