@@ -1,0 +1,178 @@
+/*
+ * Copyright (C) 2025
+ *
+ * This file is part of Messages.
+ *
+ * Messages is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Messages is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Messages.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.prauga.messages.common.util
+
+import org.prauga.messages.model.ParcelCodeParseResult
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+/**
+ * 取件码短信解析器
+ * 基于Parcel项目的SmsParser实现
+ */
+class ParcelSmsParser {
+    // 使用正则表达式来匹配地址和取件码（1个或多个取件码）优先匹配快递柜
+    private val lockerPattern: Pattern = Pattern.compile("""(?i)([0-9]+)号(?:柜|快递柜|丰巢柜|蜂巢柜|熊猫柜|兔喜快递柜|)""")
+    private val addressPattern: Pattern = Pattern.compile("""(?i)(地址|收货地址|送货地址|位于|放至|已到达|到达|已到|送达|到|已放入|已存放至|已存放|放入)[\s\S]*?([\w\s-]+?(?:门牌|驿站|,|，|。|$)\d*)""")
+    private val codePattern: Pattern = Pattern.compile(
+        """(?i)(取件码为|提货号为|取货码为|提货码为|取件码（|提货号（|取货码（|提货码（|取件码『|提货号『|取货码『|提货码『|取件码【|提货号【|取货码【|提货码【|取件码\(|提货号\(|取货码\(|提货码\(|取件码\[|提货号\[|取货码\[|提货码\[|取件码|提货号|取货码|提货码|凭|快递|京东|天猫|中通|顺丰|韵达|德邦|菜鸟|拼多多|EMS|闪送|美团|饿了么|盒马|叮咚买菜|UU跑腿|签收码|签收编号|操作码|提货编码|收货编码|签收编码|取件編號|提貨號碼|運單碼|快遞碼|快件碼|包裹碼|貨品碼)\s*[A-Za-z0-9\s-]{2,}(?:[，,、][A-Za-z0-9\s-]{2,})*""")
+
+    // 动态规则存储
+    private val customAddressPatterns = mutableListOf<String>()
+    private val customCodePatterns = mutableListOf<Pattern>()
+    private val ignoreKeywords = mutableListOf<String>()
+
+    /**
+     * 解析短信，提取取件码和地址
+     */
+    fun parseSms(sms: String): ParcelCodeParseResult {
+        var foundAddress = ""
+        var foundCode = ""
+
+        // 检查是否包含忽略关键词
+        for (ignoreKeyword in ignoreKeywords) {
+            if (ignoreKeyword.isNotBlank() && sms.contains(ignoreKeyword, ignoreCase = true)) {
+                return ParcelCodeParseResult("", "", false)
+            }
+        }
+
+        // 使用字符串匹配查找地址
+        for (pattern in customAddressPatterns) {
+            if (sms.contains(pattern, ignoreCase = true)) {
+                foundAddress = pattern
+                break
+            }
+        }
+
+        // 使用自定义规则查找取件码
+        for (pattern in customCodePatterns) {
+            val matcher = pattern.matcher(sms)
+            if (matcher.find()) {
+                foundCode = matcher.group(1)?.toString() ?: ""
+                break
+            }
+        }
+
+        // 如果自定义规则没有找到，优先匹配柜号地址，其次默认规则
+        if (foundAddress.isEmpty()) {
+            val lockerMatcher: Matcher = lockerPattern.matcher(sms)
+            foundAddress = if (lockerMatcher.find()) lockerMatcher.group(0)?.toString() ?: "" else ""
+            if (foundAddress.isEmpty()) {
+                val addressMatcher: Matcher = addressPattern.matcher(sms)
+                foundAddress = if (addressMatcher.find()) addressMatcher.group(2)?.toString() ?: "" else ""
+            }
+        }
+
+        if (foundCode.isEmpty()) {
+            val codeMatcher: Matcher = codePattern.matcher(sms)
+
+            while (codeMatcher.find()) {
+                val match = codeMatcher.group(0)
+                // 进一步将匹配到的内容按分隔符拆分成单个取件码
+                val codes = match?.split(Regex("[，,、]"))
+                foundCode = codes?.joinToString(", ") { it.trim() } ?: ""
+                foundCode = foundCode.replace(Regex("[^A-Za-z0-9-, ]"), "")
+            }
+        }
+
+        foundAddress = foundAddress.replace(Regex("[,，。]"), "")  // 移除所有标点和符号
+        foundAddress = foundAddress.replace("取件", "")  // 移除"取件"
+
+        return ParcelCodeParseResult(
+            foundAddress,
+            foundCode,
+            foundAddress.isNotEmpty() && foundCode.isNotEmpty()
+        )
+    }
+
+    /**
+     * 添加自定义地址解析规则
+     */
+    fun addCustomAddressPattern(pattern: String) {
+        customAddressPatterns.add(pattern)
+    }
+
+    /**
+     * 添加自定义取件码解析规则
+     */
+    fun addCustomCodePattern(pattern: String) {
+        customCodePatterns.add(Pattern.compile(pattern))
+    }
+
+    /**
+     * 清空所有自定义规则
+     */
+    fun clearAllCustomPatterns() {
+        customAddressPatterns.clear()
+        customCodePatterns.clear()
+        ignoreKeywords.clear()
+    }
+
+    /**
+     * 添加忽略关键词
+     */
+    fun addIgnoreKeyword(keyword: String) {
+        if (keyword.isNotBlank() && !ignoreKeywords.contains(keyword)) {
+            ignoreKeywords.add(keyword)
+        }
+    }
+
+    /**
+     * 移除忽略关键词
+     */
+    fun removeIgnoreKeyword(keyword: String) {
+        ignoreKeywords.remove(keyword)
+    }
+
+    /**
+     * 获取所有忽略关键词
+     */
+    fun getIgnoreKeywords(): List<String> = ignoreKeywords.toList()
+
+    /**
+     * 清空忽略关键词
+     */
+    fun clearIgnoreKeywords() {
+        ignoreKeywords.clear()
+    }
+
+    /**
+     * 设置自定义地址规则列表
+     */
+    fun setCustomAddressPatterns(patterns: List<String>) {
+        customAddressPatterns.clear()
+        customAddressPatterns.addAll(patterns)
+    }
+
+    /**
+     * 设置自定义取件码规则列表
+     */
+    fun setCustomCodePatterns(patterns: List<Pattern>) {
+        customCodePatterns.clear()
+        customCodePatterns.addAll(patterns)
+    }
+
+    /**
+     * 设置忽略关键词列表
+     */
+    fun setIgnoreKeywords(keywords: List<String>) {
+        ignoreKeywords.clear()
+        ignoreKeywords.addAll(keywords)
+    }
+}
