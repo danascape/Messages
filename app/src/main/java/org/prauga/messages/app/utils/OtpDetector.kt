@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * Enhanced with multi-language support from OTP Helper
  */
 
 package org.prauga.messages.common.util
@@ -14,6 +15,7 @@ data class OtpDetectionResult(
 class OtpDetector {
 
     private val otpKeywords = listOf(
+        // English
         "otp",
         "one time password",
         "one-time password",
@@ -34,6 +36,7 @@ class OtpDetector {
         "confirm code",
         "confirmation code",
         "code",
+        // Chinese
         "验证码",
         "校验码",
         "确认码",
@@ -41,7 +44,55 @@ class OtpDetector {
         "安全码",
         "动态密码",
         "一次性密码",
-        "临时密码"
+        "临时密码",
+        // Persian/Farsi
+        "کد",
+        "رمز",
+        // Arabic
+        "كود",
+        "رمز",
+        // Spanish
+        "contraseña",
+        "c[oó]digo",
+        "clave",
+        "\bel siguiente PIN\W",
+        // Japanese
+        "コード",
+        "パスワード",
+        "認証番号",
+        "ワンタイム",
+        // Korean
+        "인증번호",
+        "코드",
+        // Russian
+        "код",
+        "пароль",
+        "Parol\s+dlya\s+podtverzhdeniya",
+        // Hebrew
+        "סיסמ",
+        "\bהקוד\W",
+        "\bקוד\W",
+        // Turkish
+        "\bKodu\W",
+        "\bKodunuz\W",
+        // Italian
+        "\bcodice\W",
+        // German
+        "Einmalkennwort",
+        // Finnish
+        "\bvahvistuskoodi",
+        "\bkertakäyttökoodisi\W",
+        // Polish
+        "\bkod\W",
+        "\bautoryzacji\W",
+        // Latvian
+        "\bKods\W",
+        // Czech
+        "\bKód\W",
+        // Additional common phrases
+        "\bOTP\W",
+        "\b2FA\W",
+        "\b(?:m|sms)?TAN\W"
     ).map { it.lowercase() }
 
     private val safetyKeywords = listOf(
@@ -143,15 +194,53 @@ class OtpDetector {
         val score: Double = 0.0
     )
 
+    /**
+     * Convert non-English digits to English digits
+     */
+    private fun convertToEnglishDigits(input: String): String {
+        val chars = CharArray(input.length)
+        for (i in input.indices) {
+            var ch = input[i]
+            when (ch.code) {
+                in 0x0660..0x0669 -> ch -= (0x0660 - '0'.code) // Arabic Eastern digits
+                in 0x06F0..0x06F9 -> ch -= (0x06F0 - '0'.code) // Arabic Persian digits
+                in 0xFF10..0xFF19 -> ch -= (0xFF10 - '0'.code) // Fullwidth digits
+                in 0x07C0..0x07C9 -> ch -= (0x07C0 - '0'.code) // N'Ko digits
+            }
+            chars[i] = ch
+        }
+        return String(chars)
+    }
+
+    /**
+     * Clean up irrelevant content from the message
+     */
+    private fun cleanupMessage(message: String): String {
+        val cleanupRegexes = listOf(
+            "[a-zA-Z0-9][a-zA-Z0-9-]{0,61}\\.[a-zA-Z]{2,}(?:[.a-zA-Z]{0,3}(?=\\s+)|)", // URLs
+            "['\"]", // Quotes
+            "share OTP", // Common irrelevant phrases
+            "\b(?:www\\.)?[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}\\b" // Domains
+        )
+        
+        var cleaned = message
+        for (regex in cleanupRegexes) {
+            cleaned = cleaned.replace(Regex(regex, RegexOption.IGNORE_CASE), "")
+        }
+        return cleaned
+    }
+
     private fun normalizeWhitespace(input: String): String =
         input.replace(Regex("\\s+"), " ").trim()
 
     private fun extractCandidates(message: String): List<Candidate> {
         val candidates = mutableListOf<Candidate>()
+        val cleanedMessage = cleanupMessage(message)
+        val convertedMessage = convertToEnglishDigits(cleanedMessage)
 
         // 1) Pure numeric chunks 3–10 digits
         val numericRegex = Regex("\\b\\d{3,10}\\b")
-        numericRegex.findAll(message).forEach { match ->
+        numericRegex.findAll(convertedMessage).forEach { match ->
             val code = match.value
             candidates += Candidate(
                 code = code,
@@ -163,7 +252,7 @@ class OtpDetector {
 
         // 2) Numeric with a single space or dash (e.g., "123 456", "12-34-56")
         val spacedRegex = Regex("\\b\\d{2,4}([\\s-]\\d{2,4})+\\b")
-        spacedRegex.findAll(message).forEach { match ->
+        spacedRegex.findAll(convertedMessage).forEach { match ->
             val raw = match.value
             val normalizedCode = raw.replace("[\\s-]".toRegex(), "")
             // Avoid duplicating codes we already saw as a plain numeric chunk
@@ -179,7 +268,7 @@ class OtpDetector {
 
         // 3) Alphanumeric tokens 4–10 chars, at least 2 digits
         val alnumRegex = Regex("\\b[0-9A-Za-z]{4,10}\\b")
-        alnumRegex.findAll(message).forEach { match ->
+        alnumRegex.findAll(convertedMessage).forEach { match ->
             val token = match.value
             if (token.any { it.isDigit() } && token.count { it.isDigit() } >= 2) {
                 // Skip if it's purely numeric; we already captured those
