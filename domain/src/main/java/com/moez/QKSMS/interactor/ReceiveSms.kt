@@ -40,7 +40,9 @@ class ReceiveSms @Inject constructor(
     private val updateBadge: UpdateBadge,
     private val shortcutManager: ShortcutManager,
     private val filterRepo: MessageContentFilterRepository,
-    private val contactsRepo: ContactRepository
+    private val contactsRepo: ContactRepository,
+    private val parcelCodeRepository: org.prauga.messages.repository.ParcelCodeRepository,
+    private val parcelSmsParser: org.prauga.messages.common.util.ParcelSmsParser
 ) : Interactor<Long>() {
 
     override fun buildObservable(params: Long): Flowable<*> {
@@ -81,7 +83,23 @@ class ReceiveSms @Inject constructor(
 
                 // update and fetch conversation
                 conversationRepo.updateConversations(it.threadId)
-                conversationRepo.getOrCreateConversation(it.threadId)
+                val conversation = conversationRepo.getOrCreateConversation(it.threadId)
+                
+                // 尝试解析取件码
+                val smsBody = it.getText()
+                val parseResult = parcelSmsParser.parseSms(smsBody)
+                if (parseResult.success) {
+                    // 保存取件码到数据库
+                    val parcelCode = org.prauga.messages.model.ParcelCode()
+                    parcelCode.messageId = it.id
+                    parcelCode.address = parseResult.address
+                    parcelCode.code = parseResult.code
+                    parcelCode.date = it.date
+                    parcelCode.source = "sms"
+                    parcelCode.isActive = true
+                    parcelCodeRepository.saveParcelCode(parcelCode)
+                    Timber.d("Parsed parcel code: ${parcelCode.code} for address ${parcelCode.address}")
+                }
             }
             .mapNotNull {
                 // don't notify (continue) for blocked conversations
