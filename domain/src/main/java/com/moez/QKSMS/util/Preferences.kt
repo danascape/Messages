@@ -130,6 +130,11 @@ class Preferences @Inject constructor(
     val disableScreenshots = rxPrefs.getBoolean("disableScreenshots", false)
     val logging = rxPrefs.getBoolean("logging", false)
     val unreadAtTop = rxPrefs.getBoolean("unreadAtTop", false)
+    // 取件码相关设置
+    val parcelCodeEnabled = rxPrefs.getBoolean("parcelCodeEnabled", true)
+    val parcelCodeAutoCopyEnabled = rxPrefs.getBoolean("parcelCodeAutoCopyEnabled", true)
+    val parcelCodeNotificationEnabled = rxPrefs.getBoolean("parcelCodeNotificationEnabled", true)
+    val parcelCodeSaveHistoryEnabled = rxPrefs.getBoolean("parcelCodeSaveHistoryEnabled", true)
 
     init {
         // Migrate from old night mode preference to new one, now that we support android Q night mode
