@@ -45,54 +45,7 @@ class OtpDetector {
         "动态密码",
         "一次性密码",
         "临时密码",
-        // Persian/Farsi
-        "کد",
-        "رمز",
-        // Arabic
-        "كود",
-        "رمز",
-        // Spanish
-        "contraseña",
-        "c[oó]digo",
-        "clave",
-        "\bel siguiente PIN\W",
-        // Japanese
-        "コード",
-        "パスワード",
-        "認証番号",
-        "ワンタイム",
-        // Korean
-        "인증번호",
-        "코드",
-        // Russian
-        "код",
-        "пароль",
-        "Parol\s+dlya\s+podtverzhdeniya",
-        // Hebrew
-        "סיסמ",
-        "\bהקוד\W",
-        "\bקוד\W",
-        // Turkish
-        "\bKodu\W",
-        "\bKodunuz\W",
-        // Italian
-        "\bcodice\W",
-        // German
-        "Einmalkennwort",
-        // Finnish
-        "\bvahvistuskoodi",
-        "\bkertakäyttökoodisi\W",
-        // Polish
-        "\bkod\W",
-        "\bautoryzacji\W",
-        // Latvian
-        "\bKods\W",
-        // Czech
-        "\bKód\W",
-        // Additional common phrases
-        "\bOTP\W",
-        "\b2FA\W",
-        "\b(?:m|sms)?TAN\W"
+        
     ).map { it.lowercase() }
 
     private val safetyKeywords = listOf(
