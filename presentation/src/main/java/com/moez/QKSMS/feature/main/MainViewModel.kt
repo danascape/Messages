@@ -289,7 +289,12 @@ class MainViewModel @Inject constructor(
                 .map { query -> query.trim() }
                 .withLatestFrom(state) { query, state ->
                     if (query.isEmpty() && state.page is Searching) {
-                        newState { copy(page = Inbox(data = inboxData(currentFilter))) }
+                        newState {
+                            when (activeChip) {
+                                MessageCategory.ARCHIVED -> copy(page = Archived(data = archivedData(currentFilter)))
+                                else -> copy(page = Inbox(data = inboxData(currentFilter)))
+                            }
+                        }
                     }
                     query
                 }

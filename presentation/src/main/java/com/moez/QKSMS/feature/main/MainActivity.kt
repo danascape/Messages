@@ -328,8 +328,8 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         binding.cVTopBar3.setVisible(!hasSelection)
 
         binding.toolbarSearch.setVisible(
-            state.page is Inbox &&
-                    state.page.selected == 0 ||
+            (state.page is Inbox && state.page.selected == 0) ||
+                    (state.page is Archived && state.page.selected == 0) ||
                     state.page is Searching
         )
         binding.toolbarTitle.setVisible(true)
