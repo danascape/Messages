@@ -16,9 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.prauga.messages.feature.blocking
 
 import android.view.View
+import android.widget.CompoundButton
+import android.widget.LinearLayout
 import com.bluelinelabs.conductor.RouterTransaction
 import com.jakewharton.rxbinding2.view.clicks
 import org.prauga.messages.R
@@ -26,20 +29,21 @@ import org.prauga.messages.common.QkChangeHandler
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.animateLayoutChanges
+import org.prauga.messages.common.widget.PreferenceView
+import org.prauga.messages.feature.blocking.filters.MessageContentFiltersController
 import org.prauga.messages.feature.blocking.manager.BlockingManagerController
 import org.prauga.messages.feature.blocking.messages.BlockedMessagesController
 import org.prauga.messages.feature.blocking.numbers.BlockedNumbersController
-import org.prauga.messages.feature.blocking.filters.MessageContentFiltersController
 import org.prauga.messages.injection.appComponent
-import android.widget.CompoundButton
-import android.widget.LinearLayout
-import org.prauga.messages.common.widget.PreferenceView
 import javax.inject.Inject
 
-class BlockingController : QkController<BlockingView, BlockingState, BlockingPresenter>(), BlockingView {
+class BlockingController : QkController<BlockingView, BlockingState, BlockingPresenter>(),
+    BlockingView {
 
-    @Inject lateinit var colors: Colors
-    @Inject override lateinit var presenter: BlockingPresenter
+    @Inject
+    lateinit var colors: Colors
+    @Inject
+    override lateinit var presenter: BlockingPresenter
 
     private lateinit var parent: LinearLayout
     private lateinit var blockingManager: PreferenceView
@@ -89,27 +93,35 @@ class BlockingController : QkController<BlockingView, BlockingState, BlockingPre
     }
 
     override fun openBlockedNumbers() {
-        router.pushController(RouterTransaction.with(BlockedNumbersController())
+        router.pushController(
+            RouterTransaction.with(BlockedNumbersController())
                 .pushChangeHandler(QkChangeHandler())
-                .popChangeHandler(QkChangeHandler()))
+                .popChangeHandler(QkChangeHandler())
+        )
     }
 
     override fun openMessageContentFilters() {
-        router.pushController(RouterTransaction.with(MessageContentFiltersController())
-            .pushChangeHandler(QkChangeHandler())
-            .popChangeHandler(QkChangeHandler()))
+        router.pushController(
+            RouterTransaction.with(MessageContentFiltersController())
+                .pushChangeHandler(QkChangeHandler())
+                .popChangeHandler(QkChangeHandler())
+        )
     }
 
     override fun openBlockedMessages() {
-        router.pushController(RouterTransaction.with(BlockedMessagesController())
+        router.pushController(
+            RouterTransaction.with(BlockedMessagesController())
                 .pushChangeHandler(QkChangeHandler())
-                .popChangeHandler(QkChangeHandler()))
+                .popChangeHandler(QkChangeHandler())
+        )
     }
 
     override fun openBlockingManager() {
-        router.pushController(RouterTransaction.with(BlockingManagerController())
+        router.pushController(
+            RouterTransaction.with(BlockingManagerController())
                 .pushChangeHandler(QkChangeHandler())
-                .popChangeHandler(QkChangeHandler()))
+                .popChangeHandler(QkChangeHandler())
+        )
     }
 
 }

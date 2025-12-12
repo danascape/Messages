@@ -35,6 +35,8 @@ import io.reactivex.subjects.Subject
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.uber.autodispose.android.lifecycle.scope
+import com.uber.autodispose.autoDisposable
 import javax.inject.Inject
 
 class BlockedNumbersController : QkController<BlockedNumbersView, BlockedNumbersState, BlockedNumbersPresenter>(),
@@ -98,7 +100,16 @@ class BlockedNumbersController : QkController<BlockedNumbersView, BlockedNumbers
                 }
                 .setNegativeButton(R.string.button_cancel) { _, _ -> }
                 .setOnDismissListener { textWatcher.dispose() }
+                .create()
+
         dialog.show()
+
+        themedActivity?.theme?.take(1)
+                ?.autoDisposable(scope())
+                ?.subscribe { theme ->
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+                }
     }
 
 }

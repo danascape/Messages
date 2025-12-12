@@ -24,19 +24,22 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
+import com.uber.autodispose.android.lifecycle.scope
+import com.uber.autodispose.autoDisposable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.feature.blocking.BlockingDialog
 import org.prauga.messages.injection.appComponent
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject
 
-class BlockedMessagesController : QkController<BlockedMessagesView, BlockedMessagesState, BlockedMessagesPresenter>(),
+class BlockedMessagesController :
+    QkController<BlockedMessagesView, BlockedMessagesState, BlockedMessagesPresenter>(),
     BlockedMessagesView {
 
     override val menuReadyIntent: Subject<Unit> = PublishSubject.create()
@@ -46,11 +49,16 @@ class BlockedMessagesController : QkController<BlockedMessagesView, BlockedMessa
     override val confirmDeleteIntent: Subject<List<Long>> = PublishSubject.create()
     override val backClicked: Subject<Unit> = PublishSubject.create()
 
-    @Inject lateinit var blockedMessagesAdapter: BlockedMessagesAdapter
-    @Inject lateinit var blockingDialog: BlockingDialog
-    @Inject lateinit var colors: Colors
-    @Inject lateinit var context: Context
-    @Inject override lateinit var presenter: BlockedMessagesPresenter
+    @Inject
+    lateinit var blockedMessagesAdapter: BlockedMessagesAdapter
+    @Inject
+    lateinit var blockingDialog: BlockingDialog
+    @Inject
+    lateinit var colors: Colors
+    @Inject
+    lateinit var context: Context
+    @Inject
+    override lateinit var presenter: BlockedMessagesPresenter
 
     private lateinit var conversations: RecyclerView
     private lateinit var empty: TextView
@@ -103,10 +111,12 @@ class BlockedMessagesController : QkController<BlockedMessagesView, BlockedMessa
         themedActivity?.toolbarView?.menu?.findItem(R.id.block)?.isVisible = state.selected > 0
         themedActivity?.toolbarView?.menu?.findItem(R.id.delete)?.isVisible = state.selected > 0
 
-        setTitle(when (state.selected) {
-            0 -> context.getString(R.string.blocked_messages_title)
-            else -> context.getString(R.string.main_title_selected, state.selected)
-        })
+        setTitle(
+            when (state.selected) {
+                0 -> context.getString(R.string.blocked_messages_title)
+                else -> context.getString(R.string.main_title_selected, state.selected)
+            }
+        )
     }
 
     override fun clearSelection() = blockedMessagesAdapter.clearSelection()
@@ -117,12 +127,25 @@ class BlockedMessagesController : QkController<BlockedMessagesView, BlockedMessa
 
     override fun showDeleteDialog(conversations: List<Long>) {
         val count = conversations.size
-        AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-                .setTitle(R.string.dialog_delete_title)
-                .setMessage(resources?.getQuantityString(R.plurals.dialog_delete_message, count, count))
-                .setPositiveButton(R.string.button_delete) { _, _ -> confirmDeleteIntent.onNext(conversations) }
-                .setNegativeButton(R.string.button_cancel, null)
-                .show()
+        val dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
+            .setTitle(R.string.dialog_delete_title)
+            .setMessage(resources?.getQuantityString(R.plurals.dialog_delete_message, count, count))
+            .setPositiveButton(R.string.button_delete) { _, _ ->
+                confirmDeleteIntent.onNext(
+                    conversations
+                )
+            }
+            .setNegativeButton(R.string.button_cancel, null)
+            .create()
+
+        dialog.show()
+
+        themedActivity?.theme?.take(1)
+            ?.autoDisposable(scope())
+            ?.subscribe { theme ->
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+            }
     }
 
     override fun goBack() {
