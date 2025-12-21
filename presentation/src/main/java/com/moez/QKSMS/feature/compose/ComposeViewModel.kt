@@ -1215,11 +1215,24 @@ class ComposeViewModel @Inject constructor(
 
         // Delete the message
         view.confirmDeleteIntent
-                .withLatestFrom(view.messagesSelectedIntent, conversation) { _, messages, conversation ->
-                    deleteMessages.execute(DeleteMessages.Params(messages.toList(), conversation.id))
+                .withLatestFrom(view.messagesSelectedIntent, conversation, state) { _, messages, conversation, state ->
+                    Triple(messages, conversation, state)
                 }
                 .autoDisposable(view.scope())
-                .subscribe { view.clearSelection() }
+                .subscribe { (messages, conversation, state) ->
+                    val remainingMessages = state.messages?.second?.size ?: 0
+                    val deletingLastMessage = remainingMessages > 0 && remainingMessages <= messages.size
+
+                    deleteMessages.execute(
+                        DeleteMessages.Params(messages.toList(), conversation.id)
+                    ) {
+                        if (deletingLastMessage) {
+                            newState { copy(hasError = true) }
+                        }
+                    }
+
+                    view.clearSelection()
+                }
 
         // clear the current message schedule, text and attachments
         view.clearCurrentMessageIntent

@@ -30,6 +30,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:padding="6dp"
+        android:includeFontPadding="false"
         android:textAllCaps="true"
         app:autoSizeMaxTextSize="22sp"
         app:autoSizeTextType="uniform" />

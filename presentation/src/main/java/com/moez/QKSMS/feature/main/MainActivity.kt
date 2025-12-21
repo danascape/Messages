@@ -36,6 +36,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.lifecycle.Lifecycle
@@ -73,7 +74,6 @@ import org.prauga.messages.feature.conversations.ConversationsAdapter
 import org.prauga.messages.manager.ChangelogManager
 import org.prauga.messages.repository.SyncRepository
 import javax.inject.Inject
-import androidx.core.view.get
 
 class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::inflate), MainView {
 
@@ -185,6 +185,16 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             requestDefaultSms()
         }
 
+        binding.clearSearch.clicks()
+            .autoDisposable(scope())
+            .subscribe { clearSearch() }
+
+        binding.toolbarSearch.textChanges()
+            .autoDisposable(scope())
+            .subscribe { text ->
+                binding.clearSearch.isVisible = text.isNotEmpty()
+            }
+
         toggle.syncState()
         title = ""
         binding.toolbar.setNavigationOnClickListener {
@@ -211,8 +221,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                         -binding.cVTopBar2.height.toFloat() - 8f * resources.displayMetrics.density
                     binding.cVTopBar2.animate().translationY(translationY).setDuration(200).start()
                     binding.cVTopBar3.animate().translationY(translationY).setDuration(200).start()
-                    binding.filterGroup.animate().translationY(translationY).setDuration(200).start()
-                    binding.recyclerView.animate().translationY(translationY).setDuration(200).start()
+                    binding.filterGroup.animate().translationY(translationY).setDuration(200)
+                        .start()
+                    binding.recyclerView.animate().translationY(translationY).setDuration(200)
+                        .start()
                 } else if (dy < 0 && binding.cVTopBar2.translationY != 0f) {
                     // Show
                     binding.cVTopBar2.animate().translationY(0f).setDuration(200).start()
@@ -263,6 +275,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 val primaryTextColor = resolveThemeColor(android.R.attr.textColorPrimary)
                 val secondaryTextColor = resolveThemeColor(android.R.attr.textColorSecondary)
                 binding.searchIcon.setTint(primaryTextColor)
+                binding.clearSearch.setTint(primaryTextColor)
                 binding.toolbarSearch.setTextColor(primaryTextColor)
                 binding.toolbarSearch.setHintTextColor(secondaryTextColor)
 
@@ -547,6 +560,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override fun clearSearch() {
         dismissKeyboard()
         binding.toolbarSearch.text = null
+        binding.clearSearch.isVisible = false
     }
 
     override fun clearSelection() = conversationsAdapter.clearSelection()
