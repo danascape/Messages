@@ -93,6 +93,8 @@ class AvatarView @JvmOverloads constructor(
                 .filter { initial -> initial.isLetterOrDigit() }
                 .map { initial -> initial.toString() }
 
+        val hasAlphabetInitial = initials.any { initial -> initial.firstOrNull()?.isLetter() == true }
+
         if (initials.isNotEmpty()) {
             layout.initial.text = if (initials.size > 1) initials.first() + initials.last() else initials.first()
             layout.icon.visibility = GONE
@@ -100,6 +102,10 @@ class AvatarView @JvmOverloads constructor(
             layout.initial.text = null
             layout.icon.visibility = VISIBLE
         }
+
+        setBackgroundTint(
+            if (hasAlphabetInitial) context.getColorCompat(R.color.avatar_background) else null
+        )
 
         layout.photo.setImageDrawable(null)
         photoUri?.let { photoUri ->
