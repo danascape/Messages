@@ -335,4 +335,5 @@
     <string name="qksms_plus_free_title">QUIK+ on F-Droidi kasutajatele tasuta! Kui soovid meie arendust rahaliselt toetada, siis on see alati hea meelega oodatud.</string>
     <string name="qksms_plus_more_summary">QUIK on aktiivses arenduses ja sinu ostuga avanevad ka kõik tulevased QUIK+ funktsionaalsused!</string>
     <string name="toast_qksms_plus">Selle võimaluse kasutamiseks palun osta QUIK+ teenus</string>
+    <string name="backup_disclaimer">Hetkel on toetatud vaid SMS-sõnumite varundamine ja taastamine. MMS-i tugi ja varunduste ajastamine saab olema saadaval üsna varsti!</string>
 </resources>
