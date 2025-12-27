@@ -69,6 +69,7 @@ dependencies {
     testImplementation(libs.androidx.runner)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
+    testImplementation(libs.robolectric)
 
     // coroutines
     implementation(libs.kotlinx.coroutines.core)

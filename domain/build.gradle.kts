@@ -66,4 +66,9 @@ dependencies {
     implementation(libs.kotlin.stdlib)
 
     implementation(project(":common"))
+
+    // testing
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.robolectric)
 }

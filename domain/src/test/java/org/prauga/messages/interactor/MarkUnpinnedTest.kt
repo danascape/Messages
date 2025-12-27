@@ -1,0 +1,113 @@
+/*
+ * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ */
+package org.prauga.messages.interactor
+
+import org.prauga.messages.manager.ShortcutManager
+import org.prauga.messages.repository.ConversationRepository
+import io.reactivex.Flowable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
+
+class MarkUnpinnedTest {
+
+    @Mock
+    private lateinit var conversationRepo: ConversationRepository
+
+    @Mock
+    private lateinit var updateBadge: UpdateBadge
+
+    @Mock
+    private lateinit var shortcutManager: ShortcutManager
+
+    private lateinit var markUnpinned: MarkUnpinned
+
+    @Before
+    fun setUp() {
+        MockitoAnnotations.openMocks(this)
+        `when`(updateBadge.buildObservable(Unit)).thenReturn(Flowable.just(Unit))
+        markUnpinned = MarkUnpinned(conversationRepo, updateBadge, shortcutManager)
+    }
+
+    @Test
+    fun givenSingleThreadId_whenBuildObservable_thenMarksUnpinned() {
+        val threadIds = listOf(100L)
+        val testSubscriber = TestSubscriber<Any>()
+
+        markUnpinned.buildObservable(threadIds).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        testSubscriber.assertNoErrors()
+        verify(conversationRepo).markUnpinned(100L)
+    }
+
+    @Test
+    fun givenMultipleThreadIds_whenBuildObservable_thenMarksAllUnpinned() {
+        val threadIds = listOf(100L, 200L, 300L)
+        val testSubscriber = TestSubscriber<Any>()
+
+        markUnpinned.buildObservable(threadIds).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        verify(conversationRepo).markUnpinned(100L, 200L, 300L)
+    }
+
+    @Test
+    fun givenThreadIds_whenBuildObservable_thenUpdatesShortcuts() {
+        val threadIds = listOf(100L)
+        val testSubscriber = TestSubscriber<Any>()
+
+        markUnpinned.buildObservable(threadIds).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        verify(shortcutManager).updateShortcuts()
+    }
+
+    @Test
+    fun givenThreadIds_whenBuildObservable_thenUpdatesBadge() {
+        val threadIds = listOf(100L)
+        val testSubscriber = TestSubscriber<Any>()
+
+        markUnpinned.buildObservable(threadIds).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        verify(updateBadge).buildObservable(Unit)
+    }
+
+    @Test
+    fun givenEmptyList_whenBuildObservable_thenStillCompletes() {
+        val threadIds = emptyList<Long>()
+        val testSubscriber = TestSubscriber<Any>()
+
+        markUnpinned.buildObservable(threadIds).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+    }
+
+    @Test
+    fun givenZeroThreadId_whenBuildObservable_thenMarksUnpinned() {
+        val threadIds = listOf(0L)
+        val testSubscriber = TestSubscriber<Any>()
+
+        markUnpinned.buildObservable(threadIds).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        verify(conversationRepo).markUnpinned(0L)
+    }
+
+    @Test
+    fun givenLargeThreadId_whenBuildObservable_thenHandlesCorrectly() {
+        val threadIds = listOf(Long.MAX_VALUE)
+        val testSubscriber = TestSubscriber<Any>()
+
+        markUnpinned.buildObservable(threadIds).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        verify(conversationRepo).markUnpinned(Long.MAX_VALUE)
+    }
+}
