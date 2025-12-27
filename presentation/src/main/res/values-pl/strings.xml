@@ -534,4 +534,5 @@
     <string name="compose_file_size_unavailable">Nieznane</string>
     <string name="compose_not_default_sms_message">Aby korzystać z aplikacji Wiadomości, ustaw ją jako domyślną aplikację do obsługi SMS</string>
     <string name="compose_change_default_app">Zmień domyślną aplikację</string>
+    <string name="app_name">Wiadomości</string>
 </resources>
