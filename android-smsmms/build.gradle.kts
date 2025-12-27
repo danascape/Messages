@@ -46,4 +46,9 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.urlconnection)
     implementation(libs.kotlin.stdlib)
+
+    // testing
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.robolectric)
 }

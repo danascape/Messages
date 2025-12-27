@@ -187,7 +187,7 @@ open class MessageRepositoryImpl @Inject constructor(
             ?: return null
         // fileDateAndTime is divided by 1000 in order to remove the extra 0's after date and time
         // This way the file name isn't so long.
-        val fileDateAndTime = (part.messages?.first()?.date)?.div(1000)
+        val fileDateAndTime = (part.messages?.firstOrNull()?.date)?.div(1000)
         val fileName = "QUIK_${part.type.split("/").last()}_$fileDateAndTime.$extension"
 
         val values = contentValuesOf(
@@ -954,12 +954,20 @@ open class MessageRepositoryImpl @Inject constructor(
                 .findFirst()
                 ?.let { message ->
                     // Update the message in realm
-                    realm.executeTransaction { message.boxId = Sms.MESSAGE_TYPE_SENT }
+                    realm.executeTransaction {
+                        message.boxId = when (message.isSms()) {
+                            true -> Sms.MESSAGE_TYPE_SENT
+                            false -> Mms.MESSAGE_BOX_SENT
+                        }
+                    }
 
                     // Update the message in the native ContentProvider
                     context.contentResolver.update(
                         message.getUri(),
-                        contentValuesOf(Sms.TYPE to Sms.MESSAGE_TYPE_SENT),
+                        when (message.isSms()) {
+                            true -> contentValuesOf(Sms.TYPE to Sms.MESSAGE_TYPE_SENT)
+                            false -> contentValuesOf(Mms.MESSAGE_BOX to Mms.MESSAGE_BOX_SENT)
+                        },
                         null,
                         null
                     )
@@ -977,17 +985,25 @@ open class MessageRepositoryImpl @Inject constructor(
                 ?.let { message ->
                     // Update the message in realm
                     realm.executeTransaction {
-                        message.boxId = Sms.MESSAGE_TYPE_FAILED
+                        message.boxId = when (message.isSms()) {
+                            true -> Sms.MESSAGE_TYPE_FAILED
+                            false -> Mms.MESSAGE_BOX_FAILED
+                        }
                         message.errorCode = resultCode
                     }
 
                     // Update the message in the native ContentProvider
                     context.contentResolver.update(
                         message.getUri(),
-                        contentValuesOf(
-                            Sms.TYPE to Sms.MESSAGE_TYPE_FAILED,
-                            Sms.ERROR_CODE to resultCode,
-                        ),
+                        when (message.isSms()) {
+                            true -> contentValuesOf(
+                                Sms.TYPE to Sms.MESSAGE_TYPE_FAILED,
+                                Sms.ERROR_CODE to resultCode,
+                            )
+                            false -> contentValuesOf(
+                                Mms.MESSAGE_BOX to Mms.MESSAGE_BOX_FAILED,
+                            )
+                        },
                         null,
                         null
                     )
@@ -1003,6 +1019,12 @@ open class MessageRepositoryImpl @Inject constructor(
                 .equalTo("id", id)
                 .findFirst()
                 ?.let { message ->
+                    // Delivery reports are SMS-only; skip MMS messages
+                    if (!message.isSms()) {
+                        Timber.w("markDelivered called with MMS message id=$id, skipping")
+                        return@let
+                    }
+
                     // Update the message in realm
                     realm.executeTransaction {
                         message.deliveryStatus = Sms.STATUS_COMPLETE
@@ -1033,6 +1055,12 @@ open class MessageRepositoryImpl @Inject constructor(
                 .equalTo("id", id)
                 .findFirst()
                 ?.let { message ->
+                    // Delivery reports are SMS-only; skip MMS messages
+                    if (!message.isSms()) {
+                        Timber.w("markDeliveryFailed called with MMS message id=$id, skipping")
+                        return@let
+                    }
+
                     // Update the message in realm
                     realm.executeTransaction {
                         message.deliveryStatus = Sms.STATUS_FAILED
