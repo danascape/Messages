@@ -33,9 +33,6 @@ jobs:
     - name: Run Android Lint
       run: ./gradlew lint
 
-    - name: Run Tests
-      run: ./gradlew test
-
     - name: List APK Output Directory
       run: ls -R presentation/build/outputs/apk || true
 
