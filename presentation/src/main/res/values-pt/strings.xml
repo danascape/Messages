@@ -505,4 +505,5 @@
     <string name="main_change_default_app">Alterar aplicação padrão</string>
     <string name="compose_file_size_unavailable">Desconhecido</string>
     <string name="compose_change_default_app">Alterar aplicação padrão</string>
+    <string name="app_name">Messages</string>
 </resources>
