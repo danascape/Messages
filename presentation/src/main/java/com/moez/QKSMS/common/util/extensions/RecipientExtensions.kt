@@ -20,6 +20,7 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.core.widget.TextViewCompat
 import org.prauga.messages.R
 import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.getColorCompat
 import org.prauga.messages.common.widget.QkTextView
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.util.GlideApp
@@ -60,9 +61,10 @@ fun Recipient.getThemedIcon(
             val photoView = view.findViewById<ImageView>(R.id.photo)
 
             photoView.visibility = GONE
-            view.setBackgroundColor(theme.theme)
-            view.setBackgroundTint(theme.theme)
-            textView.setTextColor(theme.textPrimary)
+            val avatarBgColor = context.getColorCompat(R.color.avatar_view_color)
+            view.setBackgroundColor(avatarBgColor)
+            view.setBackgroundTint(avatarBgColor)
+            textView.setTextColor(context.getColorCompat(R.color.avatar_icon_color))
             TextViewCompat.setAutoSizeTextTypeWithDefaults(
                 textView,
                 TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
@@ -92,7 +94,7 @@ fun Recipient.getThemedIcon(
             } else {
                 textView.visibility = GONE
                 iconView.visibility = VISIBLE
-                iconView.setTint(theme.textPrimary)
+                iconView.setTint(context.getColorCompat(R.color.avatar_icon_color))
             }
 
             container.apply {
