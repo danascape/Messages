@@ -56,12 +56,6 @@ android {
             keyAlias = "platform"
             keyPassword = "platform"
         }
-        create("release") {
-            storeFile = System.getenv("KEYSTORE_FILE")?.let { file(it) } ?: file("$rootDir/keystore/platform.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "platform"
-            keyAlias = System.getenv("KEY_ALIAS") ?: "platform"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "platform"
-        }
     }
 
     buildTypes {
@@ -70,6 +64,7 @@ android {
             signingConfig = signingConfigs.getByName("platform")
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
+            signingConfig = signingConfigs.getByName("debug")
         }
         release {
             isMinifyEnabled = true
@@ -78,16 +73,7 @@ android {
                 getDefaultProguardFile("proguard-android.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
-        }
-    }
-
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("armeabi-v7a", "arm64-v8a")
-            isUniversalApk = false
+            signingConfig = signingConfigs.getByName("platform")
         }
     }
 
