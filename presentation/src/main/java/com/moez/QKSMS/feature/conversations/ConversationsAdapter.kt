@@ -31,6 +31,7 @@ import org.prauga.messages.common.base.QkRealmAdapter
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.common.util.OtpDetector
 import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.databinding.ConversationListItemBinding
@@ -133,6 +134,32 @@ class ConversationsAdapter @Inject constructor(
         disposables.add(disposable)
 
         binding.pinned.isVisible = conversation.pinned
+
+        // Check if the conversation contains OTP (One Time Password)
+        // 1. Initialize OTP detector
+        val otpDetector = OtpDetector()
+        // 2. Get message snippet, handle possible null value
+        val snippet = conversation.snippet ?: ""
+        // 3. Perform OTP detection
+        val otpResult = otpDetector.detect(snippet)
+        // 4. Show or hide OTP tag based on detection result
+        binding.otpTag.isVisible = otpResult.isOtp
+        
+        if (otpResult.isOtp) {
+            // Choose appropriate tag text based on language
+            val locale = context.resources.configuration.locales[0]
+            val otpText = if (locale.language == "zh") {
+                "验证码"  // Show "验证码" for Chinese locale
+            } else {
+                "OTP"     // Show "OTP" for other locales
+            }
+            binding.otpTag.text = otpText
+            
+            // Set OTP tag background and text color to match theme
+            val theme = colors.theme(recipient).theme
+            binding.otpTag.background.setTint(theme)
+            binding.otpTag.setTextColor(colors.theme(recipient).textPrimary)
+        }
     }
 
     override fun getItemId(position: Int): Long {
@@ -160,3 +187,4 @@ class ConversationsAdapter @Inject constructor(
     }
 
 }
+
