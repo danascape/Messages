@@ -37,19 +37,10 @@ class OtpDetector {
         "验证码",
         "登录码",
         "安全码",
-        "校验码",
-        "密码",
         "动态码",
         "一次性密码",
-        "授权码",
-        "访问码",
-        "重置码",
-        "交易码",
-        "确认码",
-        "认证码",
-        "OTP",
-        "2FA",
-        "MFA"
+        "二次验证码",
+        "两步验证"
     ).map { it.lowercase() }
 
     private val safetyKeywords = listOf(
@@ -64,23 +55,17 @@ class OtpDetector {
         "expires within",
         "expires after",
         "请勿分享",
-        "不要分享",
         "切勿分享",
-        "请勿透露",
-        "请勿转发",
+        "不要分享",
         "保密",
-        "有效时间",
-        "有效期为",
+        "有效期",
         "将在",
-        "内过期",
-        "后过期"
+        "分钟内过期"
     ).map { it.lowercase() }
 
     private val moneyIndicators = listOf(
         "rs", "inr", "usd", "eur", "gbp", "₹", "$", "€", "£", "balance",
-        "amount", "debited", "credited", "txn", "transaction id", "order id",
-        "人民币", "元", "¥", "金额", "余额", "转入", "转出", "交易", "订单", "交易号", "订单号",
-        "已扣除", "已入账", "支付", "收款"
+        "amount", "debited", "credited", "txn", "transaction id", "order id"
     ).map { it.lowercase() }
 
     fun detect(rawMessage: String): OtpDetectionResult {
@@ -94,11 +79,14 @@ class OtpDetector {
 
         val hasOtpKeyword = otpKeywords.any { lower.contains(it) }
         val hasSafetyKeyword = safetyKeywords.any { lower.contains(it) }
+        
+        // Check if it contains characters related to Chinese CAPTCHAs
+        val hasChineseOtpChars = lower.contains("验证码") || lower.contains("登录") || lower.contains("码")
 
         val candidates = extractCandidates(normalized)
 
         if (candidates.isEmpty()) {
-            val reason = if (hasOtpKeyword) {
+            val reason = if (hasOtpKeyword || hasChineseOtpChars) {
                 "Contains OTP-like keywords but no numeric/alphanumeric candidate code found"
             } else {
                 "No OTP-like keywords and no candidate code found"
@@ -115,7 +103,7 @@ class OtpDetector {
 
         val best = scored.maxByOrNull { it.score }!!
 
-        val globalConfidence = computeGlobalConfidence(best, hasOtpKeyword, hasSafetyKeyword)
+        val globalConfidence = computeGlobalConfidence(best, hasOtpKeyword, hasSafetyKeyword, hasChineseOtpChars)
 
         val isOtp = globalConfidence >= 0.6
 
@@ -156,79 +144,54 @@ class OtpDetector {
         input.replace(Regex("\\s+"), " ").trim()
 
     private fun extractCandidates(message: String): List<Candidate> {
-        val candidates = mutableMapOf<String, Candidate>()
+        val candidates = mutableListOf<Candidate>()
 
-        val patterns = listOf(
-            PatternInfo(
-                Regex("(\\p{IsHan}+)(\\d{3,10})"),
-                2,
-                true,
-                1.5
-            ),
-            PatternInfo(
-                Regex("(^|\\s|\\p{P}|\\p{IsHan})(\\d{3,10})(\\p{P}|\\s|$|\\p{IsHan})"),
-                2,
-                true,
-                1.0
-            ),
-            PatternInfo(
-                Regex("(^|\\s|\\p{P}|\\p{IsHan})(\\d{2,4}[\\s-]\\d{2,4})([\\s-]\\d{2,4})*(\\p{P}|\\s|$|\\p{IsHan})"),
-                2,
-                true,
-                2.0
-            ),
-            PatternInfo(
-                Regex("(^|\\s|\\p{P}|\\p{IsHan})([0-9A-Za-z]{4,10})(\\p{P}|\\s|$|\\p{IsHan})"),
-                2,
-                false,
-                0.8
+        // 1) Pure numeric chunks 3–10 digits (with word boundary support for Chinese)
+        val numericRegex = Regex("(?:\\b|^|(?<=[^0-9]))\\d{3,10}(?:\\b|$|(?=[^0-9]))")
+        numericRegex.findAll(message).forEach { match ->
+            val code = match.value
+            candidates += Candidate(
+                code = code,
+                startIndex = match.range.first,
+                endIndex = match.range.last,
+                isNumeric = true
             )
-        )
+        }
 
-        for (patternInfo in patterns) {
-            patternInfo.regex.findAll(message).forEach { match ->
-                val code = match.groupValues[patternInfo.groupIndex]
-                val normalizedCode = code.replace("[\\s-]".toRegex(), "")
+        // 2) Numeric with a single space or dash (e.g., "123 456", "12-34-56")
+        val spacedRegex = Regex("\\b\\d{2,4}([\\s-]\\d{2,4})+\\b")
+        spacedRegex.findAll(message).forEach { match ->
+            val raw = match.value
+            val normalizedCode = raw.replace("[\\s-]".toRegex(), "")
+            // Avoid duplicating codes we already saw as a plain numeric chunk
+            if (normalizedCode.length in 4..8 && candidates.none { it.code == normalizedCode }) {
+                candidates += Candidate(
+                    code = normalizedCode,
+                    startIndex = match.range.first,
+                    endIndex = match.range.last,
+                    isNumeric = true
+                )
+            }
+        }
 
-                if (isValidCandidate(normalizedCode, patternInfo.isNumeric)) {
-                    val startIndex = match.range.first + match.groupValues[1].length
-                    val endIndex = startIndex + code.length - 1
-
-                    val existing = candidates[normalizedCode]
-                    if (existing == null || patternInfo.priority > existing.score) {
-                        candidates[normalizedCode] = Candidate(
-                            code = normalizedCode,
-                            startIndex = startIndex,
-                            endIndex = endIndex,
-                            isNumeric = patternInfo.isNumeric,
-                            score = patternInfo.priority
-                        )
-                    }
+        // 3) Alphanumeric tokens 4–10 chars, at least 2 digits
+        val alnumRegex = Regex("\\b[0-9A-Za-z]{4,10}\\b")
+        alnumRegex.findAll(message).forEach { match ->
+            val token = match.value
+            if (token.any { it.isDigit() } && token.count { it.isDigit() } >= 2) {
+                // Skip if it's purely numeric; we already captured those
+                if (!token.all { it.isDigit() }) {
+                    candidates += Candidate(
+                        code = token,
+                        startIndex = match.range.first,
+                        endIndex = match.range.last,
+                        isNumeric = false
+                    )
                 }
             }
         }
 
-        return candidates.values.toList()
-    }
-
-    private data class PatternInfo(
-        val regex: Regex,
-        val groupIndex: Int,
-        val isNumeric: Boolean,
-        val priority: Double
-    )
-
-    private fun isValidCandidate(code: String, isNumeric: Boolean): Boolean {
-        val length = code.length
-
-        if (isNumeric) {
-            return length in 3..10
-        } else {
-            return length in 4..10 &&
-                    code.any { it.isDigit() } &&
-                    code.count { it.isDigit() } >= 2 &&
-                    !code.all { it.isDigit() }
-        }
+        return candidates
     }
 
     private fun scoreCandidate(
@@ -260,8 +223,9 @@ class OtpDetector {
             score -= 1.5
         }
 
-        // Local context: line containing the candidate
+        // Local context: the line containing the candidate
         val lineInfo = extractLineContext(original, candidate.startIndex, candidate.endIndex)
+        val lineLower = lineInfo.line.lowercase()
 
         // If the line is mostly just the code -> strong hint
         val trimmedLine = lineInfo.line.trim()
@@ -269,17 +233,16 @@ class OtpDetector {
             score += 2.5
         }
 
-        // Typical OTP line patterns - support both English and Chinese
+        // Typical OTP line patterns
         if (Regex(
-                "(otp|code|password|passcode|验证码|登录码|安全码|校验码|动态码|密码|一次性密码|授权码|认证码)",
+                "(otp|code|password|passcode)",
                 RegexOption.IGNORE_CASE
             ).containsMatchIn(lineInfo.line)
         ) {
             score += 2.0
         }
 
-        // Support both English and Chinese separators
-        if (Regex("(:|is|=|是|为|：)\\s*${Regex.escape(candidate.code)}").containsMatchIn(lineInfo.line)) {
+        if (Regex("(:|is|=)\\s*${Regex.escape(candidate.code)}").containsMatchIn(lineInfo.line)) {
             score += 1.5
         }
 
@@ -389,17 +352,17 @@ class OtpDetector {
     private fun computeGlobalConfidence(
         best: Candidate,
         hasOtpKeyword: Boolean,
-        hasSafetyKeyword: Boolean
+        hasSafetyKeyword: Boolean,
+        hasChineseOtpChars: Boolean
     ): Double {
         var confidence = 0.0
 
         // Base on score; tuned experimentally
         confidence += (best.score / 8.0).coerceIn(0.0, 1.0)
 
-        if (hasOtpKeyword) confidence += 0.15
+        if (hasOtpKeyword || hasChineseOtpChars) confidence += 0.15
         if (hasSafetyKeyword) confidence += 0.15
 
         return confidence.coerceIn(0.0, 1.0)
     }
 }
-
