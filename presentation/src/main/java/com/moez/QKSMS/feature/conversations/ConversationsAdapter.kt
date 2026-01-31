@@ -31,7 +31,7 @@ import org.prauga.messages.common.base.QkRealmAdapter
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
-import org.prauga.messages.app.utils.OtpDetector
+import org.prauga.messages.common.util.OtpDetector
 import org.prauga.messages.app.utils.ParcelDetector
 import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.util.extensions.setTint
