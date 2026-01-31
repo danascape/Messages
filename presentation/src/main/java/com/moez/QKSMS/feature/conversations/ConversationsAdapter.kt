@@ -147,13 +147,8 @@ class ConversationsAdapter @Inject constructor(
         binding.otpTag.isVisible = otpResult.isOtp
         
         if (otpResult.isOtp) {
-            // Choose appropriate tag text based on language
-            val locale = context.resources.configuration.locales[0]
-            val otpText = if (locale.language == "zh") {
-                context.getString(R.string.otp_tag_chinese)  // Show "验证码" for Chinese locale
-            } else {
-                context.getString(R.string.otp_tag)     // Show "OTP" for other locales
-            }
+            // Get OTP tag text from string resources (Android will automatically use the appropriate translation)
+            val otpText = context.getString(R.string.otp_tag)
             binding.otpTag.text = otpText
             
             // Set OTP tag background and text color to match theme
@@ -171,13 +166,8 @@ class ConversationsAdapter @Inject constructor(
         binding.parcelTag.isVisible = parcelResult.success
         
         if (parcelResult.success) {
-            // Choose appropriate tag text based on language
-            val locale = context.resources.configuration.locales[0]
-            val parcelText = if (locale.language == "zh") {
-                context.getString(R.string.parcel_tag_chinese)  // Show "取件码" for Chinese locale
-            } else {
-                context.getString(R.string.parcel_tag)     // Show "Parcel" for other locales
-            }
+            // Get parcel tag text from string resources (Android will automatically use the appropriate translation)
+            val parcelText = context.getString(R.string.parcel_tag)
             binding.parcelTag.text = parcelText
             
             // Set parcel tag background and text color to match theme
