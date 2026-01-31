@@ -404,4 +404,7 @@
         <item>LOL</item>
         <item>Không sao đâu</item>
     </string-array>
+    <string name="app_name">Tin nhắn</string>
+    <string name="menu_mms_part_share">Chia sẻ</string>
+    <string name="menu_mms_part_forward">Phía trước</string>
 </resources>
